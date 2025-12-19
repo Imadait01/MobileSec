@@ -1,0 +1,257 @@
+# MASVS Storage Rules - Règles de stockage sécurisé
+# Basé sur OWASP Mobile Application Security Verification Standard
+
+rules:
+  - id: MSTG-STORAGE-1
+    masvs_category: "MSTG-STORAGE-1"
+    title: "Stockage non sécurisé de données sensibles - SharedPreferences"
+    description: "Les SharedPreferences stockent les données en clair sur le système de fichiers."
+    severity: "HIGH"
+    triggers:
+      - "SharedPreferences"
+      - "getSharedPreferences"
+      - "PreferenceManager"
+      - "MODE_PRIVATE"
+      - "putString"
+      - "getString"
+      - "shared_prefs"
+    remediation: |
+      Utiliser EncryptedSharedPreferences pour les données sensibles.
+      
+      **Android:**
+      ```java
+      MasterKey masterKey = new MasterKey.Builder(context)
+          .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+          .build();
+          
+      SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(
+          context,
+          "secret_shared_prefs",
+          masterKey,
+          EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+          EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+      );
+      
+      sharedPreferences.edit()
+          .putString("sensitive_key", sensitiveValue)
+          .apply();
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+      - "https://developer.android.com/topic/security/data"
+
+  - id: MSTG-STORAGE-2
+    masvs_category: "MSTG-STORAGE-2"
+    title: "Base de données SQLite non chiffrée"
+    description: "La base de données SQLite stocke les données en clair."
+    severity: "HIGH"
+    triggers:
+      - "SQLiteDatabase"
+      - "SQLiteOpenHelper"
+      - "openOrCreateDatabase"
+      - "execSQL"
+      - "rawQuery"
+      - "sqlite"
+      - "Room"
+    remediation: |
+      Utiliser SQLCipher ou Room avec chiffrement.
+      
+      **SQLCipher:**
+      ```java
+      SQLiteDatabase.loadLibs(context);
+      SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(
+          databaseFile, 
+          password, 
+          null
+      );
+      ```
+      
+      **Room avec SQLCipher:**
+      ```java
+      SupportFactory factory = new SupportFactory(password.getBytes());
+      Room.databaseBuilder(context, AppDatabase.class, "encrypted.db")
+          .openHelperFactory(factory)
+          .build();
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+      - "https://www.zetetic.net/sqlcipher/sqlcipher-for-android/"
+
+  - id: MSTG-STORAGE-3
+    masvs_category: "MSTG-STORAGE-3"
+    title: "Stockage de fichiers en clair sur stockage externe"
+    description: "Les fichiers sont stockés sur le stockage externe accessible par toutes les applications."
+    severity: "CRITICAL"
+    triggers:
+      - "getExternalStorageDirectory"
+      - "getExternalFilesDir"
+      - "Environment.DIRECTORY"
+      - "WRITE_EXTERNAL_STORAGE"
+      - "READ_EXTERNAL_STORAGE"
+      - "external_storage"
+      - "sdcard"
+    remediation: |
+      Utiliser le stockage interne ou chiffrer les fichiers avant de les stocker.
+      
+      **Stockage interne:**
+      ```java
+      File file = new File(context.getFilesDir(), "sensitive_data.txt");
+      FileOutputStream fos = new FileOutputStream(file);
+      fos.write(encryptedData);
+      fos.close();
+      ```
+      
+      **Si stockage externe nécessaire:**
+      ```java
+      // Chiffrer avant d'écrire
+      byte[] encryptedData = encrypt(sensitiveData);
+      File file = new File(context.getExternalFilesDir(null), "data.enc");
+      FileOutputStream fos = new FileOutputStream(file);
+      fos.write(encryptedData);
+      fos.close();
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+      - "https://developer.android.com/training/data-storage"
+
+  - id: MSTG-STORAGE-4
+    masvs_category: "MSTG-STORAGE-4"
+    title: "Logs contenant des données sensibles"
+    description: "Des données sensibles sont écrites dans les logs de l'application."
+    severity: "MEDIUM"
+    triggers:
+      - "Log.d"
+      - "Log.i"
+      - "Log.v"
+      - "Log.e"
+      - "System.out.println"
+      - "print("
+      - "logger.info"
+      - "logging"
+      - "password"
+      - "token"
+      - "secret"
+    remediation: |
+      Ne jamais logger de données sensibles en production.
+      
+      **Android:**
+      ```java
+      public class SecureLogger {
+          public static void log(String tag, String message) {
+              if (BuildConfig.DEBUG) {
+                  Log.d(tag, sanitize(message));
+              }
+          }
+          
+          private static String sanitize(String message) {
+              return message.replaceAll("(password|token|secret)=\\S+", "$1=***");
+          }
+      }
+      ```
+      
+      **ProGuard (pour release):**
+      ```
+      -assumenosideeffects class android.util.Log {
+          public static int d(...);
+          public static int v(...);
+          public static int i(...);
+      }
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+
+  - id: MSTG-STORAGE-5
+    masvs_category: "MSTG-STORAGE-5"
+    title: "Données sensibles dans le presse-papiers"
+    description: "Les données sensibles copiées dans le presse-papiers sont accessibles par d'autres applications."
+    severity: "MEDIUM"
+    triggers:
+      - "ClipboardManager"
+      - "setPrimaryClip"
+      - "ClipData"
+      - "clipboard"
+      - "copy_to_clipboard"
+    remediation: |
+      Éviter de copier des données sensibles ou les effacer rapidement.
+      
+      **Android:**
+      ```java
+      // Éviter de copier des données sensibles
+      // Si nécessaire, effacer après un délai
+      ClipboardManager clipboard = (ClipboardManager) 
+          getSystemService(Context.CLIPBOARD_SERVICE);
+          
+      // Effacer après 60 secondes
+      new Handler().postDelayed(() -> {
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+              clipboard.clearPrimaryClip();
+          } else {
+              clipboard.setPrimaryClip(ClipData.newPlainText("", ""));
+          }
+      }, 60000);
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+
+  - id: MSTG-STORAGE-6
+    masvs_category: "MSTG-STORAGE-6"
+    title: "Cache WebView contenant des données sensibles"
+    description: "Le cache du WebView peut stocker des données sensibles."
+    severity: "MEDIUM"
+    triggers:
+      - "setCacheMode"
+      - "clearCache"
+      - "WebView"
+      - "LOAD_CACHE"
+      - "webview_cache"
+    remediation: |
+      Désactiver le cache pour les pages sensibles.
+      
+      **Android:**
+      ```java
+      WebSettings settings = webView.getSettings();
+      settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+      settings.setAppCacheEnabled(false);
+      
+      // Nettoyer le cache à la fermeture
+      @Override
+      protected void onDestroy() {
+          webView.clearCache(true);
+          webView.clearHistory();
+          super.onDestroy();
+      }
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+
+  - id: MSTG-STORAGE-7
+    masvs_category: "MSTG-STORAGE-7"
+    title: "Backup non sécurisé activé"
+    description: "L'application permet le backup sans chiffrement."
+    severity: "MEDIUM"
+    triggers:
+      - "allowBackup"
+      - "android:allowBackup=\"true\""
+      - "fullBackupContent"
+      - "backup"
+    remediation: |
+      Désactiver le backup ou exclure les données sensibles.
+      
+      **AndroidManifest.xml:**
+      ```xml
+      <application
+          android:allowBackup="false"
+          android:fullBackupContent="@xml/backup_rules">
+      ```
+      
+      **backup_rules.xml:**
+      ```xml
+      <?xml version="1.0" encoding="utf-8"?>
+      <full-backup-content>
+          <exclude domain="sharedpref" path="sensitive_prefs.xml"/>
+          <exclude domain="database" path="sensitive.db"/>
+      </full-backup-content>
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+      - "https://developer.android.com/guide/topics/data/autobackup"
