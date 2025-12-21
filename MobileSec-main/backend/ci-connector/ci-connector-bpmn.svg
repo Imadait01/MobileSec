@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="900" viewBox="0 0 1000 900">
+  <defs>
+    <style>
+      .start-event { fill: #90EE90; stroke: #228B22; stroke-width: 3; }
+      .end-event { fill: #FFB6C1; stroke: #DC143C; stroke-width: 3; }
+      .task { fill: #FFFFFF; stroke: #4682B4; stroke-width: 2; rx: 10; }
+      .service-task { fill: #DDA0DD; stroke: #9370DB; stroke-width: 2; rx: 10; }
+      .gateway { fill: #FFD700; stroke: #FFA500; stroke-width: 3; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; fill: #000; }
+      .small-text { font-family: Arial, sans-serif; font-size: 10px; text-anchor: middle; fill: #000; }
+      .flow { fill: none; stroke: #333; stroke-width: 2; marker-end: url(#arrowhead); }
+      .db-flow { fill: none; stroke: #666; stroke-width: 1.5; stroke-dasharray: 3,3; }
+      .layer { fill: #F5F5F5; stroke: #999; stroke-width: 2; }
+      .layer-title { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; fill: #333; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="30" style="font-size: 18px; font-weight: bold; text-anchor: middle;">CI Connector - Architecture BPMN</text>
+
+  <!-- LAYER 1: API CONTROLLER -->
+  <rect class="layer" x="50" y="60" width="900" height="160"/>
+  <text class="layer-title" x="80" y="90">COUCHE 1 : CONTRÔLEUR API</text>
+
+  <!-- Start Event -->
+  <circle class="start-event" cx="120" cy="140" r="20"/>
+  <text class="small-text" x="120" y="175">Début</text>
+
+  <!-- Task 1: Recevoir POST -->
+  <rect class="task" x="190" y="110" width="130" height="60"/>
+  <text class="text" x="255" y="132">Recevoir POST</text>
+  <text class="small-text" x="255" y="152">/api/trigger</text>
+  <path class="flow" d="M 140 140 L 190 140"/>
+
+  <!-- Task 2: Valider Request -->
+  <rect class="task" x="370" y="110" width="130" height="60"/>
+  <text class="text" x="435" y="132">Valider Request</text>
+  <text class="small-text" x="435" y="152">(apkPath)</text>
+  <path class="flow" d="M 320 140 L 370 140"/>
+
+  <!-- Gateway: Valide? -->
+  <path class="gateway" d="M 550 115 L 580 140 L 550 165 L 520 140 Z"/>
+  <text class="text" x="550" y="147">✓?</text>
+  <path class="flow" d="M 500 140 L 520 140"/>
+
+  <!-- Error 404 -->
+  <circle class="end-event" cx="550" cy="60" r="15"/>
+  <text class="small-text" x="550" y="45">Erreur 404</text>
+  <path class="flow" d="M 550 115 L 550 75" stroke="red"/>
+  <text class="small-text" x="570" y="95" fill="red">Non</text>
+
+  <!-- Task 3: Retourner 200 -->
+  <rect class="task" x="740" y="110" width="130" height="60"/>
+  <text class="text" x="805" y="140">Retourner 200</text>
+
+  <!-- End Event -->
+  <circle class="end-event" cx="920" cy="140" r="20"/>
+  <text class="small-text" x="920" y="175">Fin</text>
+  <path class="flow" d="M 870 140 L 900 140"/>
+
+  <!-- Flow to Layer 2 -->
+  <path class="flow" d="M 580 140 L 630 140 L 630 260"/>
+  <text class="small-text" x="600" y="130">Oui</text>
+
+  <!-- LAYER 2: LOGIC -->
+  <rect class="layer" x="50" y="240" width="900" height="240"/>
+  <text class="layer-title" x="80" y="270">COUCHE 2 : LOGIQUE MÉTIER</text>
+
+  <!-- Task 4: Vérifier Docker -->
+  <rect class="task" x="560" y="310" width="140" height="60"/>
+  <text class="text" x="630" y="332">Vérifier Docker</text>
+  <text class="small-text" x="630" y="352">Status</text>
+  <path class="flow" d="M 630 260 L 630 310"/>
+
+  <!-- Task 5: Déclencher APK Scanner -->
+  <rect class="service-task" x="380" y="310" width="160" height="60"/>
+  <text class="text" x="460" y="325">🚀 Déclencher</text>
+  <text class="text" x="460" y="340">APK Scanner</text>
+  <text class="small-text" x="460" y="358">(Docker Container)</text>
+  <path class="flow" d="M 560 340 L 540 340"/>
+
+  <!-- Task 6: Générer YAML CI/CD -->
+  <rect class="service-task" x="380" y="400" width="160" height="60"/>
+  <text class="text" x="460" y="415">📄 Générer</text>
+  <text class="text" x="460" y="430">YAML CI/CD</text>
+  <text class="small-text" x="460" y="448">(GitHub/GitLab)</text>
+  <path class="flow" d="M 460 370 L 460 400"/>
+
+  <!-- Flow to Layer 3 -->
+  <path class="flow" d="M 460 460 L 460 520"/>
+
+  <!-- LAYER 3: DATA MESSAGING -->
+  <rect class="layer" x="50" y="500" width="900" height="180"/>
+  <text class="layer-title" x="80" y="530">COUCHE 3 : MESSAGERIE DONNÉES</text>
+
+  <!-- Task 7: Logger événement -->
+  <rect class="task" x="390" y="555" width="140" height="60"/>
+  <text class="text" x="460" y="577">📝 Logger</text>
+  <text class="text" x="460" y="597">Événement</text>
+  <path class="flow" d="M 460 520 L 460 555"/>
+
+  <!-- Database -->
+  <ellipse cx="650" cy="605" rx="45" ry="30" fill="none" stroke="#333" stroke-width="2"/>
+  <ellipse cx="650" cy="600" rx="45" ry="30" fill="none" stroke="#333" stroke-width="2"/>
+  <ellipse cx="650" cy="595" rx="45" ry="30" fill="#E8E8E8" stroke="#333" stroke-width="2"/>
+  <text class="text" x="650" y="600">MongoDB</text>
+  
+  <!-- DB Connection -->
+  <path class="db-flow" d="M 530 585 L 605 595"/>
+
+  <!-- Task 8: Notifier CI/CD -->
+  <rect class="service-task" x="390" y="640" width="140" height="40"/>
+  <text class="text" x="460" y="665">🔔 Notifier CI/CD</text>
+  <path class="flow" d="M 460 615 L 460 640"/>
+
+  <!-- Return flow to API -->
+  <path class="flow" d="M 460 640 L 460 625 L 805 625 L 805 170" stroke-dasharray="5,5"/>
+  <path class="flow" d="M 805 170 L 805 140 L 740 140"/>
+
+  <!-- Legend -->
+  <rect x="50" y="710" width="900" height="160" fill="#FAFAFA" stroke="#CCC" stroke-width="1" rx="5"/>
+  <text x="70" y="735" style="font-size: 13px; font-weight: bold; fill: #333;">Légende:</text>
+  
+  <circle cx="80" cy="760" r="10" class="start-event"/>
+  <text x="100" y="765" style="font-size: 11px; fill: #333;">Événement Début/Fin</text>
+  
+  <rect x="270" y="750" width="60" height="20" class="task"/>
+  <text x="340" y="763" style="font-size: 11px; fill: #333;">Tâche</text>
+  
+  <rect x="430" y="750" width="60" height="20" class="service-task"/>
+  <text x="500" y="763" style="font-size: 11px; fill: #333;">Service Docker/API</text>
+  
+  <path class="gateway" d="M 660 750 L 680 760 L 660 770 L 640 760 Z"/>
+  <text x="690" y="763" style="font-size: 11px; fill: #333;">Passerelle</text>
+  
+  <line x1="70" y1="795" x2="130" y2="795" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="140" y="800" style="font-size: 11px; fill: #333;">Flux de données</text>
+  
+  <line x1="280" y1="795" x2="340" y2="795" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <text x="350" y="800" style="font-size: 11px; fill: #333;">Connexion BD</text>
+
+  <line x1="480" y1="795" x2="540" y2="795" stroke="#333" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  <text x="550" y="800" style="font-size: 11px; fill: #333;">Flux asynchrone</text>
+
+  <!-- Description -->
+  <!-- Description -->
+  <text x="70" y="830" style="font-size: 12px; fill: #555; font-weight: bold;">Description du flux:</text>
+  <text x="70" y="850" style="font-size: 10px; fill: #555;">1. Réception d'une requête POST avec le chemin de l'APK</text>
+  <text x="70" y="865" style="font-size: 10px; fill: #555;">2. Validation et vérification de l'existence du fichier APK</text>
+  <text x="500" y="850" style="font-size: 10px; fill: #555;">3. Déclenchement d'APK Scanner via Docker (orchestration uniquement)</text>
+  <text x="500" y="865" style="font-size: 10px; fill: #555;">4. Génération du fichier YAML CI/CD et logging de l'événement</text>
+</svg>

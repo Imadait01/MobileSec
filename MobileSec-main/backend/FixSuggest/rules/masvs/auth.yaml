@@ -1,0 +1,247 @@
+# MASVS Auth Rules - Règles d'authentification et autorisation
+# Basé sur OWASP Mobile Application Security Verification Standard
+
+rules:
+  - id: MSTG-AUTH-1
+    masvs_category: "MSTG-AUTH-1"
+    title: "Authentification biométrique mal implémentée"
+    description: "L'authentification biométrique n'est pas correctement sécurisée."
+    severity: "HIGH"
+    triggers:
+      - "BiometricPrompt"
+      - "FingerprintManager"
+      - "fingerprint"
+      - "biometric"
+      - "authenticate"
+      - "CryptoObject"
+    remediation: |
+      Utiliser BiometricPrompt avec CryptoObject pour une authentification forte.
+      
+      **Android:**
+      ```java
+      BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+          .setTitle("Authentification requise")
+          .setSubtitle("Utilisez votre empreinte digitale")
+          .setNegativeButtonText("Annuler")
+          .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+          .build();
+      
+      // Utiliser un CryptoObject lié au Keystore
+      KeyGenerator keyGenerator = KeyGenerator.getInstance(
+          KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+      keyGenerator.init(new KeyGenParameterSpec.Builder(
+          "biometric_key",
+          KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+          .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+          .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+          .setUserAuthenticationRequired(true)
+          .build());
+      
+      SecretKey key = keyGenerator.generateKey();
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+      cipher.init(Cipher.ENCRYPT_MODE, key);
+      
+      biometricPrompt.authenticate(promptInfo, 
+          new BiometricPrompt.CryptoObject(cipher));
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+      - "https://developer.android.com/training/sign-in/biometric-auth"
+
+  - id: MSTG-AUTH-2
+    masvs_category: "MSTG-AUTH-2"
+    title: "Token d'authentification stocké de manière non sécurisée"
+    description: "Le token d'authentification est stocké en clair."
+    severity: "CRITICAL"
+    triggers:
+      - "access_token"
+      - "refresh_token"
+      - "auth_token"
+      - "jwt"
+      - "bearer"
+      - "session_id"
+      - "token"
+    remediation: |
+      Stocker les tokens dans le Keystore Android ou EncryptedSharedPreferences.
+      
+      **Android:**
+      ```java
+      // EncryptedSharedPreferences
+      MasterKey masterKey = new MasterKey.Builder(context)
+          .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+          .build();
+          
+      SharedPreferences securePrefs = EncryptedSharedPreferences.create(
+          context,
+          "secure_tokens",
+          masterKey,
+          EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+          EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+      );
+      
+      securePrefs.edit().putString("auth_token", token).apply();
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+
+  - id: MSTG-AUTH-3
+    masvs_category: "MSTG-AUTH-3"
+    title: "Mot de passe faible autorisé"
+    description: "L'application n'impose pas de politique de mot de passe fort."
+    severity: "MEDIUM"
+    triggers:
+      - "password"
+      - "pwd"
+      - "passwd"
+      - "weak_password"
+      - "password_policy"
+    remediation: |
+      Implémenter une validation de mot de passe robuste.
+      
+      **Java:**
+      ```java
+      public class PasswordValidator {
+          private static final int MIN_LENGTH = 12;
+          private static final Pattern UPPERCASE = Pattern.compile("[A-Z]");
+          private static final Pattern LOWERCASE = Pattern.compile("[a-z]");
+          private static final Pattern DIGIT = Pattern.compile("[0-9]");
+          private static final Pattern SPECIAL = Pattern.compile("[!@#$%^&*(),.?\":{}|<>]");
+          
+          public static boolean isValid(String password) {
+              if (password.length() < MIN_LENGTH) return false;
+              if (!UPPERCASE.matcher(password).find()) return false;
+              if (!LOWERCASE.matcher(password).find()) return false;
+              if (!DIGIT.matcher(password).find()) return false;
+              if (!SPECIAL.matcher(password).find()) return false;
+              return true;
+          }
+      }
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+      - "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html"
+
+  - id: MSTG-AUTH-4
+    masvs_category: "MSTG-AUTH-4"
+    title: "Session sans expiration"
+    description: "Les sessions n'ont pas de mécanisme d'expiration."
+    severity: "HIGH"
+    triggers:
+      - "session"
+      - "expires"
+      - "timeout"
+      - "session_timeout"
+      - "no_expiry"
+      - "infinite_session"
+    remediation: |
+      Implémenter une expiration de session côté client et serveur.
+      
+      **Android:**
+      ```java
+      public class SessionManager {
+          private static final long SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+          private long lastActivityTime;
+          
+          public void updateLastActivity() {
+              lastActivityTime = System.currentTimeMillis();
+          }
+          
+          public boolean isSessionValid() {
+              return (System.currentTimeMillis() - lastActivityTime) < SESSION_TIMEOUT;
+          }
+          
+          public void checkSessionAndRedirect(Context context) {
+              if (!isSessionValid()) {
+                  clearSession();
+                  // Redirect to login
+                  Intent intent = new Intent(context, LoginActivity.class);
+                  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                  context.startActivity(intent);
+              }
+          }
+      }
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+
+  - id: MSTG-AUTH-5
+    masvs_category: "MSTG-AUTH-5"
+    title: "Absence de protection contre le brute force"
+    description: "L'application ne limite pas les tentatives d'authentification."
+    severity: "HIGH"
+    triggers:
+      - "login"
+      - "authenticate"
+      - "brute_force"
+      - "rate_limit"
+      - "max_attempts"
+      - "failed_login"
+    remediation: |
+      Implémenter une limitation du nombre de tentatives.
+      
+      **Android:**
+      ```java
+      public class LoginAttemptManager {
+          private static final int MAX_ATTEMPTS = 5;
+          private static final long LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
+          
+          private int attemptCount = 0;
+          private long lockoutEndTime = 0;
+          
+          public boolean canAttemptLogin() {
+              if (lockoutEndTime > System.currentTimeMillis()) {
+                  return false;
+              }
+              return attemptCount < MAX_ATTEMPTS;
+          }
+          
+          public void recordFailedAttempt() {
+              attemptCount++;
+              if (attemptCount >= MAX_ATTEMPTS) {
+                  lockoutEndTime = System.currentTimeMillis() + LOCKOUT_DURATION;
+              }
+          }
+          
+          public void resetAttempts() {
+              attemptCount = 0;
+              lockoutEndTime = 0;
+          }
+      }
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"
+
+  - id: MSTG-AUTH-6
+    masvs_category: "MSTG-AUTH-6"
+    title: "Credentials transmis en clair"
+    description: "Les identifiants sont transmis sans chiffrement."
+    severity: "CRITICAL"
+    triggers:
+      - "username"
+      - "password"
+      - "credentials"
+      - "login"
+      - "base64"
+      - "plain_text"
+    remediation: |
+      Toujours utiliser HTTPS et hasher les mots de passe côté serveur.
+      
+      **Android:**
+      ```java
+      // Toujours vérifier HTTPS
+      if (!url.startsWith("https://")) {
+          throw new SecurityException("HTTPS required for authentication");
+      }
+      
+      // Utiliser retrofit avec OkHttp configuré pour HTTPS
+      OkHttpClient client = new OkHttpClient.Builder()
+          .connectionSpecs(Collections.singletonList(ConnectionSpec.MODERN_TLS))
+          .build();
+      
+      Retrofit retrofit = new Retrofit.Builder()
+          .baseUrl("https://api.example.com/")
+          .client(client)
+          .build();
+      ```
+    references:
+      - "https://owasp.org/www-project-mobile-top-10/"

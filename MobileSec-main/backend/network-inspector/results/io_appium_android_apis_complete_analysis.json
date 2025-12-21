@@ -1,0 +1,392 @@
+{
+  "report_metadata": {
+    "generated_at": "2025-12-01T21:09:17.170213",
+    "generator": "NetworkInspector Microservice",
+    "version": "1.0.0",
+    "test_type": "COMPLETE_SECURITY_ANALYSIS",
+    "apk_source_file": "N/A"
+  },
+  "application_info": {
+    "name": "API Demos",
+    "package": "io.appium.android.apis",
+    "version": "3.1.0",
+    "version_code": "18",
+    "size_mb": 4.58,
+    "sdk_min": "17",
+    "sdk_target": "28",
+    "signature": {
+      "is_signed": true,
+      "is_signed_v1": true,
+      "is_signed_v2": true,
+      "is_signed_v3": false,
+      "certificates": [
+        {
+          "subject": "<asn1crypto.x509.Name 2235462223968 b'071\\x160\\x14\\x06\\x03U\\x04\\x03\\x0c\\rAndroid Debug1\\x100\\x0e\\x06\\x03U\\x04\\n\\x0c\\x07Android1\\x0b0\\t\\x06\\x03U\\x04\\x06\\x13\\x02US'>",
+          "issuer": "<asn1crypto.x509.Name 2235462223776 b'071\\x160\\x14\\x06\\x03U\\x04\\x03\\x0c\\rAndroid Debug1\\x100\\x0e\\x06\\x03U\\x04\\n\\x0c\\x07Android1\\x0b0\\t\\x06\\x03U\\x04\\x06\\x13\\x02US'>",
+          "serial_number": "1",
+          "not_before": "2017-12-29 03:18:03+00:00",
+          "not_after": "2047-12-22 03:18:03+00:00"
+        }
+      ]
+    }
+  },
+  "permissions": {
+    "total": 12,
+    "network": [
+      "android.permission.INTERNET"
+    ],
+    "advertising": [
+      "android.permission.READ_CONTACTS"
+    ],
+    "sensitive": [
+      "android.permission.RECEIVE_SMS",
+      "android.permission.CAMERA",
+      "android.permission.SEND_SMS",
+      "android.permission.READ_CONTACTS",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.ACCESS_COARSE_LOCATION",
+      "android.permission.WRITE_CONTACTS"
+    ],
+    "all_permissions": [
+      "android.permission.RECEIVE_SMS",
+      "android.permission.VIBRATE",
+      "android.permission.CAMERA",
+      "android.permission.SET_WALLPAPER",
+      "android.permission.INTERNET",
+      "android.permission.SEND_SMS",
+      "android.permission.READ_CONTACTS",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.ACCESS_COARSE_LOCATION",
+      "android.permission.RECORD_AUDIO",
+      "android.permission.NFC",
+      "android.permission.WRITE_CONTACTS"
+    ]
+  },
+  "components": {
+    "activities": 0,
+    "services": 0,
+    "receivers": 0,
+    "exported_activities": 0
+  },
+  "network_security": {
+    "security_score": {
+      "score": 47,
+      "grade": "D",
+      "level": "POOR"
+    },
+    "traffic_summary": {
+      "total_flows": 45,
+      "tls_issues_count": 5,
+      "plaintext_traffic_count": 4,
+      "sensitive_leaks_count": 4,
+      "insecure_endpoints_count": 9
+    },
+    "tls_issues": [
+      {
+        "url": "https://legacy-api.example.com",
+        "issue": "Outdated TLS version",
+        "tls_version": "TLSv1.0",
+        "severity": "HIGH"
+      },
+      {
+        "url": "https://insecure-cdn.net/resource",
+        "issue": "Weak cipher suite",
+        "severity": "MEDIUM"
+      },
+      {
+        "url": "https://ad-server.com/track",
+        "issue": "Certificate pinning not enforced",
+        "severity": "MEDIUM"
+      },
+      {
+        "url": "https://analytics-old.com",
+        "issue": "Self-signed certificate accepted",
+        "severity": "CRITICAL"
+      },
+      {
+        "url": "https://old-tracking.com",
+        "issue": "TLSv1.1 deprecated version",
+        "tls_version": "TLSv1.1",
+        "severity": "MEDIUM"
+      }
+    ],
+    "plaintext_traffic": [
+      {
+        "url": "http://io.appium.android.apis.com/update",
+        "method": "POST",
+        "data_sent": true,
+        "risk": "HIGH"
+      },
+      {
+        "url": "http://ad.doubleclick.net/ddm/trackimp",
+        "method": "GET",
+        "data_sent": true,
+        "risk": "MEDIUM"
+      },
+      {
+        "url": "http://googleads.g.doubleclick.net/mads/gma",
+        "method": "POST",
+        "data_sent": true,
+        "risk": "HIGH"
+      },
+      {
+        "url": "http://www.google-analytics.com/collect",
+        "method": "POST",
+        "data_sent": true,
+        "risk": "HIGH"
+      }
+    ],
+    "sensitive_data_leaks": [
+      {
+        "url": "http://www.google-analytics.com/collect",
+        "type": "device_id",
+        "pattern": "Android ID in plaintext",
+        "severity": "HIGH",
+        "context": "Transmitted over HTTP"
+      },
+      {
+        "url": "http://io.appium.android.apis.com/location",
+        "type": "location",
+        "pattern": "GPS coordinates",
+        "severity": "CRITICAL",
+        "context": "Location data over HTTP"
+      },
+      {
+        "url": "http://googleads.g.doubleclick.net/mads/gma",
+        "type": "advertising_id",
+        "pattern": "Google Advertising ID",
+        "severity": "MEDIUM",
+        "context": "Ad tracking in cleartext"
+      },
+      {
+        "url": "https://api.io.appium.android.apis.com/user",
+        "type": "email",
+        "pattern": "user@example.com",
+        "severity": "HIGH",
+        "context": "User email in logs"
+      }
+    ],
+    "insecure_endpoints": [
+      {
+        "url": "http://io.appium.android.apis.com/update",
+        "method": "POST",
+        "risk": "Data transmission over HTTP",
+        "severity": "HIGH"
+      },
+      {
+        "url": "http://ad.doubleclick.net/ddm/trackimp",
+        "method": "GET",
+        "risk": "Data transmission over HTTP",
+        "severity": "MEDIUM"
+      },
+      {
+        "url": "http://googleads.g.doubleclick.net/mads/gma",
+        "method": "POST",
+        "risk": "Data transmission over HTTP",
+        "severity": "HIGH"
+      },
+      {
+        "url": "http://www.google-analytics.com/collect",
+        "method": "POST",
+        "risk": "Data transmission over HTTP",
+        "severity": "HIGH"
+      }
+    ],
+    "flows": [
+      {
+        "url": "https://api.io.appium.android.apis.com/v1/sync",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:09:17.169214",
+        "tls_version": "TLSv1.3",
+        "status_code": 200
+      },
+      {
+        "url": "https://config.io.appium.android.apis.com/settings",
+        "method": "GET",
+        "timestamp": "2025-12-01T21:09:17.169214",
+        "tls_version": "TLSv1.2",
+        "status_code": 200
+      },
+      {
+        "url": "https://ads.google.com/pagead/ads",
+        "method": "GET",
+        "timestamp": "2025-12-01T21:09:17.169214",
+        "tls_version": "TLSv1.3",
+        "status_code": 200
+      },
+      {
+        "url": "http://ad.doubleclick.net/ddm/trackimp",
+        "method": "GET",
+        "timestamp": "2025-12-01T21:09:17.169214",
+        "tls_version": null,
+        "status_code": 200
+      },
+      {
+        "url": "http://googleads.g.doubleclick.net/mads/gma",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:09:17.169214",
+        "tls_version": null,
+        "status_code": 200
+      },
+      {
+        "url": "http://www.google-analytics.com/collect",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:09:17.169214",
+        "tls_version": null,
+        "status_code": 200
+      },
+      {
+        "url": "https://firebaselogging.googleapis.com/v1/log",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:09:17.169214",
+        "tls_version": "TLSv1.2",
+        "status_code": 200
+      },
+      {
+        "url": "http://io.appium.android.apis.com/update",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:09:17.169214",
+        "tls_version": null,
+        "status_code": 200
+      }
+    ],
+    "recommendations": [
+      {
+        "priority": "HIGH",
+        "category": "Network Security",
+        "issue": "Plaintext HTTP traffic detected",
+        "recommendation": "Migrate all 4 HTTP requests to HTTPS. Configure network security config to block cleartext traffic.",
+        "affected_domains": [
+          "io.appium.android.apis.com",
+          "ad.doubleclick.net",
+          "googleads.g.doubleclick.net",
+          "www.google-analytics.com"
+        ]
+      },
+      {
+        "priority": "CRITICAL",
+        "category": "Data Protection",
+        "issue": "2 critical data leaks detected",
+        "recommendation": "Review and secure transmission of sensitive data: device_id, location, advertising_id, email. Implement encryption and avoid sending sensitive data in URLs.",
+        "leak_types": [
+          "device_id",
+          "location",
+          "advertising_id",
+          "email"
+        ]
+      }
+    ],
+    "deductions": [
+      "4 plaintext requests (-8)",
+      "5 TLS issues (-5)",
+      "2 critical data leaks (-20)",
+      "Low security ratio 0.0% (-20)"
+    ]
+  },
+  "risk_assessment": {
+    "overall_risk_score": 84,
+    "risk_level": "HIGH",
+    "is_high_risk": true,
+    "risk_factors": [
+      "Accès Internet activé",
+      "1 permissions publicitaires",
+      "7 permissions sensibles",
+      "4 requêtes HTTP non chiffrées"
+    ]
+  },
+  "detailed_findings": {
+    "critical_issues": [
+      {
+        "category": "Self-signed certificate accepted",
+        "severity": "CRITICAL",
+        "issue": "Self-signed certificate accepted",
+        "affected_url": "https://analytics-old.com",
+        "recommendation": "Immediate remediation required"
+      },
+      {
+        "category": "Data Privacy",
+        "severity": "CRITICAL",
+        "issue": "location exposed: GPS coordinates",
+        "affected_url": "http://io.appium.android.apis.com/location",
+        "recommendation": "Encrypt sensitive data transmission"
+      }
+    ],
+    "high_priority_issues": [
+      {
+        "category": "Data Encryption",
+        "severity": "HIGH",
+        "issue": "4 HTTP requests sending data unencrypted",
+        "count": 4,
+        "recommendation": "Migrate all traffic to HTTPS"
+      }
+    ],
+    "medium_priority_issues": [
+      {
+        "category": "TLS/SSL",
+        "severity": "MEDIUM",
+        "issue": "TLS configuration issues detected",
+        "count": 3,
+        "recommendation": "Update TLS configuration"
+      }
+    ]
+  },
+  "recommendations": {
+    "immediate_actions": [
+      "Migrate all HTTP traffic to HTTPS",
+      "Fix critical TLS/SSL issues",
+      "Remove sensitive data from network logs"
+    ],
+    "short_term": [
+      "Implement certificate pinning",
+      "Review advertising permissions",
+      "Encrypt all sensitive data",
+      "Implement Network Security Config"
+    ],
+    "long_term": [
+      "Conduct regular security audits",
+      "Implement RASP",
+      "Review third-party SDKs",
+      "Implement end-to-end encryption"
+    ]
+  },
+  "compliance": {
+    "gdpr": {
+      "applicable": true,
+      "concerns": [
+        "Sensitive permissions: android.permission.RECEIVE_SMS, android.permission.CAMERA, android.permission.SEND_SMS"
+      ]
+    },
+    "owasp_mobile_top_10": {
+      "M2_insecure_data_storage": {
+        "status": "VIOLATED",
+        "details": "4 data leaks detected"
+      },
+      "M3_insecure_communication": {
+        "status": "VIOLATED",
+        "details": "4 HTTP connections"
+      },
+      "M5_insufficient_cryptography": {
+        "status": "VIOLATED",
+        "details": "5 TLS issues"
+      }
+    }
+  },
+  "executive_summary": {
+    "overall_verdict": "CRITICAL",
+    "security_grade": "D",
+    "key_statistics": {
+      "total_permissions": 12,
+      "security_score": "47/100",
+      "risk_score": "84/100",
+      "critical_issues": 2,
+      "high_priority_issues": 7,
+      "unencrypted_requests": 4
+    },
+    "main_concerns": [
+      "HTTP traffic: 4 requests",
+      "Sensitive data leaks: 4",
+      "TLS/SSL issues: 5",
+      "Sensitive permissions: 7"
+    ]
+  }
+}

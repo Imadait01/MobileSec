@@ -1,0 +1,433 @@
+{
+  "report_metadata": {
+    "generated_at": "2025-12-01T21:04:02.363521",
+    "generator": "NetworkInspector Microservice",
+    "version": "1.0.0",
+    "test_type": "COMPLETE_SECURITY_ANALYSIS"
+  },
+  "application_info": {
+    "name": "Subway Surfers",
+    "package": "com.kiloo.subwaysurf",
+    "version": "3.55.2",
+    "version_code": "87411",
+    "size_mb": 218.86,
+    "sdk_min": "23",
+    "sdk_target": "35",
+    "signature": {
+      "is_signed": true,
+      "is_signed_v1": true,
+      "is_signed_v2": true,
+      "is_signed_v3": true
+    }
+  },
+  "permissions": {
+    "total": 19,
+    "network": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.ACCESS_WIFI_STATE"
+    ],
+    "advertising": [
+      "android.permission.ACCESS_ADSERVICES_TOPICS",
+      "android.permission.ACCESS_ADSERVICES_AD_ID",
+      "android.permission.ACCESS_ADSERVICES_ATTRIBUTION",
+      "android.permission.ACCESS_ADSERVICES_CUSTOM_AUDIENCE",
+      "com.google.android.gms.permission.AD_ID"
+    ],
+    "sensitive": [
+      "com.android.vending.BILLING"
+    ],
+    "all_permissions": [
+      "android.permission.POST_NOTIFICATIONS",
+      "com.kiloo.subwaysurf.BIND_GET_INSTALL_REFERRER_SERVICE",
+      "com.google.android.c2dm.permission.RECEIVE",
+      "android.permission.VIBRATE",
+      "android.permission.ACCESS_ADSERVICES_TOPICS",
+      "com.android.vending.CHECK_LICENSE",
+      "android.permission.INTERNET",
+      "com.kiloo.subwaysurf.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+      "android.permission.ACCESS_ADSERVICES_AD_ID",
+      "android.permission.ACCESS_ADSERVICES_ATTRIBUTION",
+      "com.kiloo.subwaysurf.permission.C2D_MESSAGE",
+      "android.permission.ACCESS_ADSERVICES_CUSTOM_AUDIENCE",
+      "com.android.vending.BILLING",
+      "com.google.android.gms.permission.AD_ID",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.WAKE_LOCK",
+      "android.permission.ACCESS_WIFI_STATE",
+      "android.permission.FOREGROUND_SERVICE",
+      "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE"
+    ]
+  },
+  "components": {
+    "activities": 0,
+    "services": 0,
+    "receivers": 0,
+    "exported_activities": 0
+  },
+  "network_security": {
+    "security_score": {
+      "score": 48,
+      "grade": "D",
+      "level": "POOR"
+    },
+    "traffic_summary": {
+      "total_flows": 45,
+      "tls_issues_count": 5,
+      "plaintext_traffic_count": 12,
+      "sensitive_leaks_count": 8,
+      "insecure_endpoints_count": 15
+    },
+    "tls_issues": [
+      {
+        "url": "https://legacy-api.example.com",
+        "issue": "Outdated TLS version",
+        "tls_version": "TLSv1.0",
+        "severity": "high"
+      },
+      {
+        "url": "https://insecure-cdn.net/resource",
+        "issue": "Weak cipher suite",
+        "severity": "medium"
+      },
+      {
+        "url": "https://ad-server.com/track",
+        "issue": "Certificate pinning not enforced",
+        "severity": "medium"
+      },
+      {
+        "url": "https://analytics-old.com",
+        "issue": "Self-signed certificate accepted",
+        "severity": "critical"
+      },
+      {
+        "url": "https://old-tracking.com",
+        "issue": "TLSv1.1 deprecated version",
+        "tls_version": "TLSv1.1",
+        "severity": "medium"
+      }
+    ],
+    "plaintext_traffic": [
+      {
+        "url": "http://ad.doubleclick.net/ddm/trackimp",
+        "method": "GET",
+        "data_sent": true,
+        "risk": "medium"
+      },
+      {
+        "url": "http://googleads.g.doubleclick.net/mads/gma",
+        "method": "POST",
+        "data_sent": true,
+        "risk": "high"
+      },
+      {
+        "url": "http://www.google-analytics.com/collect",
+        "method": "POST",
+        "data_sent": true,
+        "risk": "high"
+      },
+      {
+        "url": "http://app-measurement.com/a",
+        "method": "POST",
+        "data_sent": true,
+        "risk": "high"
+      },
+      {
+        "url": "http://tracking.unity3d.com/event",
+        "method": "POST",
+        "data_sent": true,
+        "risk": "medium"
+      },
+      {
+        "url": "http://ads.mopub.com/m/ad",
+        "method": "GET",
+        "data_sent": false,
+        "risk": "low"
+      }
+    ],
+    "sensitive_data_leaks": [
+      {
+        "url": "http://www.google-analytics.com/collect",
+        "type": "device_id",
+        "pattern": "Android ID in plaintext",
+        "severity": "high",
+        "context": "Transmitted over HTTP"
+      },
+      {
+        "url": "http://googleads.g.doubleclick.net/mads/gma",
+        "type": "advertising_id",
+        "pattern": "Google Advertising ID",
+        "severity": "medium",
+        "context": "Ad tracking in cleartext"
+      },
+      {
+        "url": "https://firebaselogging.googleapis.com/v1/log",
+        "type": "email",
+        "pattern": "user@example.com",
+        "severity": "high",
+        "context": "User email in logs"
+      },
+      {
+        "url": "http://app-measurement.com/a",
+        "type": "location",
+        "pattern": "GPS coordinates",
+        "severity": "critical",
+        "context": "Location data over HTTP"
+      },
+      {
+        "url": "http://tracking.unity3d.com/event",
+        "type": "session_token",
+        "pattern": "Session ID exposed",
+        "severity": "high",
+        "context": "Authentication token in URL"
+      },
+      {
+        "url": "https://api.kiloo.com/player",
+        "type": "api_key",
+        "pattern": "Hardcoded API key",
+        "severity": "critical",
+        "context": "API key in source code"
+      },
+      {
+        "url": "http://ad.doubleclick.net/ddm/trackimp",
+        "type": "user_id",
+        "pattern": "User identifier",
+        "severity": "medium",
+        "context": "User tracking"
+      },
+      {
+        "url": "https://crashlyticsreports-pa.googleapis.com/v1/reports",
+        "type": "crash_data",
+        "pattern": "Stack traces with PII",
+        "severity": "medium",
+        "context": "Personal data in crash reports"
+      }
+    ],
+    "insecure_endpoints": [
+      {
+        "url": "http://ad.doubleclick.net/ddm/trackimp",
+        "method": "GET",
+        "risk": "Ad tracking over HTTP",
+        "severity": "medium"
+      },
+      {
+        "url": "http://googleads.g.doubleclick.net/mads/gma",
+        "method": "POST",
+        "risk": "Sending ad data unencrypted",
+        "severity": "high"
+      },
+      {
+        "url": "http://www.google-analytics.com/collect",
+        "method": "POST",
+        "risk": "Analytics data over HTTP",
+        "severity": "high"
+      },
+      {
+        "url": "http://app-measurement.com/a",
+        "method": "POST",
+        "risk": "User measurements in cleartext",
+        "severity": "high"
+      }
+    ],
+    "flows": [
+      {
+        "url": "https://api.com.kiloo.subwaysurf.com/v1/player/sync",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:04:02.362022",
+        "tls_version": "TLSv1.3",
+        "status_code": 200
+      },
+      {
+        "url": "https://config.com.kiloo.subwaysurf.com/game-config",
+        "method": "GET",
+        "timestamp": "2025-12-01T21:04:02.362022",
+        "tls_version": "TLSv1.2",
+        "status_code": 200
+      },
+      {
+        "url": "https://ads.google.com/pagead/ads",
+        "method": "GET",
+        "timestamp": "2025-12-01T21:04:02.362022",
+        "tls_version": "TLSv1.3",
+        "status_code": 200
+      },
+      {
+        "url": "http://ad.doubleclick.net/ddm/trackimp",
+        "method": "GET",
+        "timestamp": "2025-12-01T21:04:02.362022",
+        "tls_version": null,
+        "status_code": 200
+      },
+      {
+        "url": "http://googleads.g.doubleclick.net/mads/gma",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:04:02.362022",
+        "tls_version": null,
+        "status_code": 200
+      },
+      {
+        "url": "http://www.google-analytics.com/collect",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:04:02.362022",
+        "tls_version": null,
+        "status_code": 200
+      },
+      {
+        "url": "https://firebaselogging.googleapis.com/v1/log",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:04:02.362022",
+        "tls_version": "TLSv1.2",
+        "status_code": 200
+      },
+      {
+        "url": "http://app-measurement.com/a",
+        "method": "POST",
+        "timestamp": "2025-12-01T21:04:02.362022",
+        "tls_version": null,
+        "status_code": 200
+      }
+    ],
+    "recommendations": [
+      {
+        "priority": "HIGH",
+        "category": "Network Security",
+        "issue": "Plaintext HTTP traffic detected",
+        "recommendation": "Migrate all 6 HTTP requests to HTTPS. Configure network security config to block cleartext traffic.",
+        "affected_domains": [
+          "ad.doubleclick.net",
+          "googleads.g.doubleclick.net",
+          "www.google-analytics.com",
+          "app-measurement.com",
+          "tracking.unity3d.com"
+        ]
+      }
+    ],
+    "deductions": [
+      "6 plaintext requests (-12)",
+      "5 TLS issues (-5)",
+      "8 data leaks (-15)",
+      "Low security ratio 0.0% (-20)"
+    ]
+  },
+  "risk_assessment": {
+    "overall_risk_score": 27,
+    "risk_level": "MEDIUM",
+    "is_high_risk": true,
+    "risk_factors": [
+      "Accès Internet activé",
+      "5 permissions publicitaires",
+      "1 permissions sensibles"
+    ]
+  },
+  "detailed_findings": {
+    "critical_issues": [
+      {
+        "category": "Data Privacy",
+        "severity": "CRITICAL",
+        "issue": "Location data transmitted over HTTP",
+        "affected_url": "http://app-measurement.com/a",
+        "recommendation": "Encrypt all sensitive data transmission using HTTPS"
+      },
+      {
+        "category": "Network Security",
+        "severity": "CRITICAL",
+        "issue": "Self-signed certificates accepted",
+        "affected_url": "https://analytics-old.com",
+        "recommendation": "Implement proper certificate validation"
+      }
+    ],
+    "high_priority_issues": [
+      {
+        "category": "Data Encryption",
+        "severity": "HIGH",
+        "issue": "12 HTTP requests sending data unencrypted",
+        "count": 12,
+        "recommendation": "Migrate all traffic to HTTPS"
+      },
+      {
+        "category": "Privacy",
+        "severity": "HIGH",
+        "issue": "5 advertising tracking permissions",
+        "permissions": [
+          "android.permission.ACCESS_ADSERVICES_TOPICS",
+          "android.permission.ACCESS_ADSERVICES_AD_ID",
+          "android.permission.ACCESS_ADSERVICES_ATTRIBUTION",
+          "android.permission.ACCESS_ADSERVICES_CUSTOM_AUDIENCE",
+          "com.google.android.gms.permission.AD_ID"
+        ],
+        "recommendation": "Review necessity of all advertising permissions"
+      }
+    ],
+    "medium_priority_issues": [
+      {
+        "category": "TLS/SSL",
+        "severity": "MEDIUM",
+        "issue": "Weak TLS configurations detected",
+        "count": 3,
+        "recommendation": "Update TLS configuration to use strong cipher suites"
+      }
+    ]
+  },
+  "recommendations": {
+    "immediate_actions": [
+      "Migrate all HTTP traffic to HTTPS immediately",
+      "Fix critical TLS certificate validation issues",
+      "Remove hardcoded API keys from source code"
+    ],
+    "short_term": [
+      "Implement certificate pinning for critical endpoints",
+      "Review and minimize advertising permissions",
+      "Encrypt sensitive data before transmission",
+      "Implement Network Security Config to block cleartext traffic"
+    ],
+    "long_term": [
+      "Conduct regular security audits",
+      "Implement runtime application self-protection (RASP)",
+      "Review all third-party SDKs for security compliance",
+      "Implement end-to-end encryption for user data"
+    ]
+  },
+  "compliance": {
+    "gdpr": {
+      "applicable": true,
+      "concerns": [
+        "Sensitive user data transmitted without encryption",
+        "Extensive tracking permissions",
+        "Location data exposure"
+      ]
+    },
+    "owasp_mobile_top_10": {
+      "M2_insecure_data_storage": {
+        "status": "VIOLATED",
+        "details": "Sensitive data leaks detected in network traffic"
+      },
+      "M3_insecure_communication": {
+        "status": "VIOLATED",
+        "details": "Multiple HTTP connections transmitting sensitive data"
+      },
+      "M5_insufficient_cryptography": {
+        "status": "VIOLATED",
+        "details": "Weak TLS configurations and plaintext transmission"
+      }
+    }
+  },
+  "executive_summary": {
+    "overall_verdict": "ATTENTION REQUIRED",
+    "security_grade": "D",
+    "key_statistics": {
+      "total_permissions": 19,
+      "security_score": "48/100",
+      "risk_score": "27/100",
+      "critical_issues": 2,
+      "high_priority_issues": 2,
+      "unencrypted_requests": 12
+    },
+    "main_concerns": [
+      "High volume of unencrypted HTTP traffic (12 requests)",
+      "Critical sensitive data transmitted over HTTP",
+      "Extensive advertising tracking permissions (5)",
+      "TLS/SSL configuration vulnerabilities (5 issues)",
+      "Multiple sensitive data leakage points (8)"
+    ]
+  }
+}
