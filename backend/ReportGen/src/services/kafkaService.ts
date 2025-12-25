@@ -176,7 +176,8 @@ export class KafkaService {
                 includeSummary: true,
                 includeRecommendations: true,
                 includeRawFindings: false,
-                template: 'default'
+                // Use an available template (softwareX is included by default)
+                template: 'softwareX'
             };
             const filePath = await pdfGeneratorService.generatePdf(report, options);
             report.filePath = filePath;

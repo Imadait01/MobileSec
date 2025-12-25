@@ -151,8 +151,8 @@ const ScanDetail = () => {
                         if (status === 'completed') {
                             clearInterval(pollInterval);
 
-                            // 3. Download
-                            const downloadArgs = reportGenService.getDownloadUrl(reportId);
+                            // 3. Download (request PDF; server will convert JSON -> PDF on demand if needed)
+                            const downloadArgs = reportGenService.getDownloadUrl(reportId) + '?forcePdf=true';
                             const link = document.createElement('a');
                             link.href = downloadArgs;
                             link.setAttribute('download', `report-${id}.pdf`);

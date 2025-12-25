@@ -15,9 +15,9 @@ const fixSuggestService = {
      */
     getSuggestions: async (scanId, regenerate = false) => {
         try {
-            // Endpoint: /v1/suggest/scan/{scan_id}?regenerate={bool}
-            // Gateway rewrites /api/fix -> /api. So we send /api/fix/v1/... -> /api/v1/...
-            const response = await axios.get(`${API_URL}/v1/suggest/scan/${scanId}`, {
+            // Endpoint: /api/v1/suggest/scan/{scan_id}?regenerate={bool}
+            // FixSuggest exposes routes under /api/v1 (main includes prefix '/api/v1')
+            const response = await axios.get(`${API_URL}/api/v1/suggest/scan/${scanId}`, {
                 params: { regenerate }
             });
             return response.data;
@@ -34,7 +34,7 @@ const fixSuggestService = {
      */
     getCachedSuggestions: async (scanId) => {
         try {
-            const response = await axios.get(`${API_URL}/v1/suggest/scan/${scanId}/cached`);
+            const response = await axios.get(`${API_URL}/api/v1/suggest/scan/${scanId}/cached`);
             return response.data;
         } catch (error) {
             // 404 handled by caller usually

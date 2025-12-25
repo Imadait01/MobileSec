@@ -634,21 +634,48 @@ export class ReportController {
       // 6. Générer le fichier selon le format demandé
       let filePath: string;
 
-      switch (requestData.format) {
-        case 'pdf':
-          filePath = await pdfGeneratorService.generatePdf(report, options);
-          break;
-        case 'json':
-          filePath = await jsonExporterService.exportToJson(report, {
-            pretty: true,
-            includeRawData: options.includeRawFindings
-          });
-          break;
-        case 'sarif':
-          filePath = await sarifExporterService.exportToSarif(report);
-          break;
-        default:
-          throw new Error(`Unsupported format: ${requestData.format}`);
+      try {
+        switch (requestData.format) {
+          case 'pdf':
+            try {
+              filePath = await pdfGeneratorService.generatePdf(report, options);
+            } catch (pdfErr) {
+              logger.error('PDF generation failed, attempting JSON fallback', { error: String(pdfErr), reportId });
+              // Try to fall back to JSON so users still have a downloadable report
+              report.format = 'json';
+              const jsonPath = await jsonExporterService.exportToJson(report, {
+                pretty: true,
+                includeRawData: options.includeRawFindings
+              });
+
+              // Attempt to convert the generated JSON to PDF using a simple renderer (pdfkit)
+              try {
+                const pdfPath = jsonPath.replace(/\.json$/i, '.pdf');
+                const outPdf = await (await import('../services/jsonToPdf.service')).jsonToPdfService.convert(jsonPath, pdfPath);
+                filePath = outPdf;
+                report.format = 'pdf';
+                logger.info('Converted JSON to PDF fallback successfully', { pdfPath: outPdf });
+              } catch (convErr) {
+                logger.error('JSON to PDF fallback failed', { error: String(convErr), reportId });
+                // Keep JSON file as final artifact
+                filePath = jsonPath;
+              }
+            }
+            break;
+          case 'json':
+            filePath = await jsonExporterService.exportToJson(report, {
+              pretty: true,
+              includeRawData: options.includeRawFindings
+            });
+            break;
+          case 'sarif':
+            filePath = await sarifExporterService.exportToSarif(report);
+            break;
+          default:
+            throw new Error(`Unsupported format: ${requestData.format}`);
+        }
+      } catch (err) {
+        throw err;
       }
 
       // 7. Mettre à jour le rapport avec le statut final
@@ -792,6 +819,22 @@ export class ReportController {
       if (!reportPath) {
         res.status(404).json({ error: 'Report not found (Memory/DB miss)', reportId });
         return;
+      }
+
+      // If the client requests a PDF but we only have JSON, attempt on-demand conversion
+      if (String(req.query.forcePdf) === 'true' && reportFormat === 'json') {
+        try {
+          const pdfPath = reportPath.replace(/\.json$/i, '.pdf');
+          const { jsonToPdfService } = await import('../services/jsonToPdf.service');
+          await jsonToPdfService.convert(reportPath, pdfPath);
+          reportPath = pdfPath;
+          reportFormat = 'pdf';
+          logger.info('On-demand JSON -> PDF conversion completed', { reportId, pdfPath });
+        } catch (convErr) {
+          logger.error('Failed to convert JSON report to PDF on-demand', { error: String(convErr), reportId });
+          res.status(500).json({ error: 'Failed to convert report to PDF' });
+          return;
+        }
       }
 
       if (memoryReport && (memoryReport.status === 'pending' || memoryReport.status === 'processing')) {

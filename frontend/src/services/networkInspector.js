@@ -6,12 +6,12 @@ const BASE_URL = config.API_URLS.NETWORK_INSPECTOR;
 const networkInspectorService = {
     // Récupérer les résultats par scanId
     getResults: async (scanId) => {
-        return axios.get(`${BASE_URL}/results/${scanId}`);
+        return axios.get(`${BASE_URL}/api/results/${scanId}`);
     },
 
     // Stats
     getStats: async () => {
-        return axios.get(`${BASE_URL}/stats`);
+        return axios.get(`${BASE_URL}/api/stats`);
     },
 
     // Status du scan en cours (si dynamique)
@@ -29,7 +29,7 @@ const networkInspectorService = {
             // For now, let's try assuming I fixed main.py to aliases? No I didn't alias scan-status.
             // I will use /scan-status but I suspect it will fail via Gateway if Gateway forces /api prefix.
             // Actually, for this specific endpoint, I might need to add an alias in backend or change Gateway rule.
-            return await axios.get(`${BASE_URL}/scan-status`);
+            return await axios.get(`${BASE_URL}/api/scan-status`);
         } catch (e) {
             return null;
         }
