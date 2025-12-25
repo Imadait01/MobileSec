@@ -1,2 +1,0 @@
-# SecretHunter Core Module
-

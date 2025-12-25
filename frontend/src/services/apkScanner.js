@@ -9,7 +9,7 @@ const apkScannerService = {
         const formData = new FormData();
         formData.append('file', file);
 
-        return axios.post(`${BASE_URL}/scan?force=${force}`, formData, {
+        return axios.post(`${BASE_URL}/api/scan?force=${force}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -19,17 +19,17 @@ const apkScannerService = {
 
     // Récupérer les résultats d'un scan
     getResults: async (scanId) => {
-        return axios.get(`${BASE_URL}/results/${scanId}`);
+        return axios.get(`${BASE_URL}/api/results/${scanId}`);
     },
 
     // Lister tous les résultats (pour l'historique)
     getAllResults: async (limit = 20) => {
-        return axios.get(`${BASE_URL}/results?limit=${limit}`);
+        return axios.get(`${BASE_URL}/api/results?limit=${limit}`);
     },
 
     // Stats
     getStats: async () => {
-        return axios.get(`${BASE_URL}/stats`);
+        return axios.get(`${BASE_URL}/api/stats`);
     }
 };
 

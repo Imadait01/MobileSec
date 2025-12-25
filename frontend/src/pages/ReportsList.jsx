@@ -44,7 +44,7 @@ const ReportsList = () => {
     };
 
     const handleDownload = (reportId) => {
-        const url = reportGenService.getDownloadUrl(reportId);
+        const url = reportGenService.getDownloadUrl(reportId) + '?forcePdf=true';
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', `report-${reportId}.pdf`);

@@ -37,7 +37,20 @@ export class PdfGeneratorService {
 
     try {
       // Charger le template
-      const templatePath = path.join(this.templatesDir, `${options.template}.html`);
+      let templateName = options.template || 'softwareX';
+
+      // Si le template demandé n'existe pas, récupérer le premier template disponible
+      if (!await this.templateExists(templateName)) {
+        logger.warn(`Requested template '${templateName}' not found. Falling back to first available template.`);
+        const templates = await this.listTemplates();
+        if (templates.length === 0) {
+          throw new Error('No report templates available');
+        }
+        templateName = templates[0];
+        logger.info(`Using template: ${templateName}`);
+      }
+
+      const templatePath = path.join(this.templatesDir, `${templateName}.html`);
       const templateContent = await fs.readFile(templatePath, 'utf-8');
 
       // Préparer les données pour le template
@@ -342,23 +355,34 @@ export class PdfGeneratorService {
 
     try {
       logger.info('Launching Puppeteer with Chromium...');
-      browser = await puppeteer.launch({
-        headless: 'new',
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-        dumpio: true,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--no-first-run',
-          '--disable-extensions',
-          '--disable-accelerated-2d-canvas',
-          '--disable-software-rasterizer',
-          '--disable-web-security',
-          '--disable-features=IsolateOrigins,site-per-process'
-        ]
-      });
+      try {
+        browser = await puppeteer.launch({
+          headless: 'new',
+          executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+          dumpio: true,
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--no-first-run',
+            '--disable-extensions',
+            '--disable-accelerated-2d-canvas',
+            '--disable-software-rasterizer',
+            '--disable-web-security',
+            '--disable-features=IsolateOrigins,site-per-process'
+          ]
+        });
+      } catch (launchErr) {
+        logger.warn('Puppeteer launch failed with configured executablePath, trying without executablePath', { error: String(launchErr) });
+        // Try without explicit executablePath (let puppeteer use bundled binary if present)
+        browser = await puppeteer.launch({
+          headless: 'new',
+          dumpio: true,
+          args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        });
+      }
+
       logger.info('Puppeteer launched successfully');
 
       const page = await browser.newPage();

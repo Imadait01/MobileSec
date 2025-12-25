@@ -7,7 +7,7 @@ const config = {
         NETWORK_INSPECTOR: process.env.REACT_APP_NETWORK_INSPECTOR_URL || 'http://localhost:5001',
         CRYPTO_CHECK: process.env.REACT_APP_CRYPTO_CHECK_URL || 'http://localhost:8084',
         FIX_SUGGEST: process.env.REACT_APP_FIX_SUGGEST_URL || 'http://localhost:8000',
-        REPORT_GEN: process.env.REACT_APP_REPORT_GEN_URL || 'http://localhost:8082/api/report',
+        REPORT_GEN: process.env.REACT_APP_REPORT_GEN_URL || 'http://localhost:3005',
     }
 };
 
