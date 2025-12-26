@@ -17,13 +17,29 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [statsRes, scansRes] = await Promise.all([
-                    apkScannerService.getStats(),
-                    apkScannerService.getAllResults(5) // Limit to 5
-                ]);
-                setStats(statsRes.data);
-                // Adapter selon la structure réelle de la réponse (items ou array direct)
-                setRecentScans(Array.isArray(scansRes.data) ? scansRes.data : scansRes.data.results || scansRes.data.items || []);
+                // Fetch stats and scans with error handling
+                let statsData = null;
+                let scansData = [];
+
+                try {
+                    const statsRes = await apkScannerService.getStats();
+                    statsData = statsRes.data;
+                } catch (statsErr) {
+                    console.warn("Stats endpoint not available, using defaults:", statsErr.message);
+                    // Use defaults if stats endpoint doesn't exist
+                    statsData = { total_scans: 0, completed: 0, failed: 0 };
+                }
+
+                try {
+                    const scansRes = await apkScannerService.getAllResults(5);
+                    scansData = Array.isArray(scansRes.data) ? scansRes.data : scansRes.data.results || scansRes.data.items || [];
+                } catch (scansErr) {
+                    console.warn("Scans endpoint error:", scansErr.message);
+                    scansData = [];
+                }
+
+                setStats(statsData);
+                setRecentScans(scansData);
             } catch (err) {
                 console.error("Dashboard error:", err);
                 setError("Failed to load dashboard data");

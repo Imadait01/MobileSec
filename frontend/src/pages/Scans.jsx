@@ -20,12 +20,25 @@ const Scans = () => {
     const loadScans = async () => {
         try {
             setLoading(true);
+            setError(null);
             const response = await apkScannerService.getAllResults(100); // Higher limit
             // Adapter structure
-            setScans(Array.isArray(response.data) ? response.data : response.data.results || response.data.items || []);
+            const scanData = Array.isArray(response.data) ? response.data : response.data.results || response.data.items || [];
+            setScans(scanData);
+
+            if (scanData.length === 0) {
+                console.warn("No scans found in response");
+            }
         } catch (err) {
-            console.error(err);
-            setError("Failed to load scans.");
+            console.error("Error loading scans:", err);
+            // Show more helpful error message
+            if (err.response) {
+                setError(`Failed to load scans: ${err.response.status} - ${err.response.statusText}`);
+            } else if (err.request) {
+                setError("Failed to load scans: Cannot connect to APK Scanner service. Please ensure all services are running.");
+            } else {
+                setError(`Failed to load scans: ${err.message}`);
+            }
         } finally {
             setLoading(false);
         }

@@ -435,6 +435,38 @@ services:
       - kafka
       - zookeeper
 
+  # ---------------------------------------------------------------------------
+  # ML Model - Machine Learning service for fix suggestions
+  # Endpoints: http://localhost:8001/api/v1/predict/{scan_id}
+  # ---------------------------------------------------------------------------
+  ml-model:
+    build:
+      context: ./ml-model
+      dockerfile: Dockerfile
+    container_name: ml-model
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - MONGODB_URI=mongodb://admin:securityplatform2024@mongodb:27017/security_platform?authSource=admin
+      - MONGODB_DATABASE=security_platform
+      - MODEL_PATH=/app/models/lightgbm_model.txt
+    volumes:
+      - ml-model-data:/app/models
+      - ml-model-data:/app/data
+    networks:
+      - security-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8001/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
 # =============================================================================
 # Réseaux
 # =============================================================================
@@ -484,3 +516,7 @@ volumes:
 
   # FixSuggest
   fixsuggest-logs:
+
+  # ML Model
+  ml-model-data:
+    name: ml-model-data

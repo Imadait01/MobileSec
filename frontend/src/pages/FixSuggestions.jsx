@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import fixSuggestService from '../services/fixSuggest';
+import mlModelService from '../services/mlModel';
 import Layout from '../components/layout/Layout';
 import Card from '../components/common/Card';
 import Badge from '../components/common/Badge';
@@ -29,6 +30,12 @@ const FixSuggestions = () => {
     const [regenerating, setRegenerating] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
+
+    // ML Model states
+    const [mlData, setMlData] = useState(null);
+    const [mlLoading, setMlLoading] = useState(true);
+    const [mlError, setMlError] = useState(null);
+    const [showMLSuggestions, setShowMLSuggestions] = useState(true);
 
     const fetchSuggestions = async (forceRegenerate = false) => {
         try {
@@ -59,8 +66,28 @@ const FixSuggestions = () => {
         }
     };
 
+    const fetchMLSuggestions = async () => {
+        try {
+            setMlLoading(true);
+            const response = await mlModelService.getPredictions(scanId, 3);
+            setMlData(response);
+            setMlError(null);
+        } catch (err) {
+            console.error('ML predictions error:', err);
+            // Don't set error if it's 404 (scan not found in training data)
+            if (err.response && err.response.status === 404) {
+                setMlError('Scan not found in ML training data. Upload more scans to improve predictions.');
+            } else {
+                setMlError('ML service unavailable or model not trained yet.');
+            }
+        } finally {
+            setMlLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchSuggestions();
+        fetchMLSuggestions();
     }, [scanId]);
 
     const getConfidenceBadge = (score) => {
@@ -73,62 +100,106 @@ const FixSuggestions = () => {
 
     return (
         <Layout title="AI Fix Suggestions">
-            <div className="mb-6 flex justify-between items-center">
-                <div>
-                    <Link to={`/scans/${scanId}`} className="text-blue-500 hover:underline mb-2 inline-block">
-                        &larr; Back to Scan Details
-                    </Link>
-                    <h1 className="text-3xl font-bold text-white">
-                        Intelligent Patch Suggestions <span className="text-purple-400">✨ AI Powered</span>
-                    </h1>
-                    <p className="text-gray-400 mt-1">
-                        Automated analysis and code fixes powered by Amazon Nova 2 Lite
-                    </p>
-                </div>
-                <button
-                    onClick={() => fetchSuggestions(true)}
-                    disabled={regenerating || loading}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${regenerating
+            <div className="mb-6">
+                <Link to={`/scans/${scanId}`} className="text-blue-500 hover:underline mb-2 inline-block">
+                    &larr; Back to Scan Details
+                </Link>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <h1 className="text-3xl font-bold text-white">
+                            Intelligent Security Fix Suggestions
+                        </h1>
+                        <p className="text-gray-400 mt-1">
+                            Automated analysis powered by AI and Machine Learning
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => fetchSuggestions(true)}
+                        disabled={regenerating || loading}
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${regenerating
                             ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
                             : 'bg-purple-600 hover:bg-purple-700 text-white'
-                        }`}
-                >
-                    {regenerating ? (
-                        <>
-                            <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Regenerating...
-                        </>
-                    ) : (
-                        <>
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            Regenerate Suggestions
-                        </>
-                    )}
-                </button>
+                            }`}
+                    >
+                        {regenerating ? (
+                            <>
+                                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Regenerating AI...
+                            </>
+                        ) : (
+                            <>
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                Regenerate AI
+                            </>
+                        )}
+                    </button>
+                </div>
+
+                {/* Toggle between AI and ML */}
+                <div className="mt-4 flex gap-2 border-b border-gray-800">
+                    <button
+                        onClick={() => setShowMLSuggestions(false)}
+                        className={`px-6 py-3 font-medium transition-all ${!showMLSuggestions
+                            ? 'text-purple-400 border-b-2 border-purple-400'
+                            : 'text-gray-400 hover:text-gray-300'
+                            }`}
+                    >
+                        ✨ AI Suggestions (Amazon Nova)
+                    </button>
+                    <button
+                        onClick={() => setShowMLSuggestions(true)}
+                        className={`px-6 py-3 font-medium transition-all ${showMLSuggestions
+                            ? 'text-green-400 border-b-2 border-green-400'
+                            : 'text-gray-400 hover:text-gray-300'
+                            }`}
+                    >
+                        🤖 ML Model Predictions (LightGBM)
+                    </button>
+                </div>
             </div>
 
-            {loading && !data && (
+            {/* Loading States */}
+            {!showMLSuggestions && loading && !data && (
                 <div className="text-center py-20">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 mx-auto mb-4"></div>
-                    <p className="text-gray-400">Analysis in progress... This may take a few seconds.</p>
+                    <p className="text-gray-400">AI Analysis in progress... This may take a few seconds.</p>
                 </div>
             )}
 
-            {error && !data && (
+            {showMLSuggestions && mlLoading && !mlData && (
+                <div className="text-center py-20">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
+                    <p className="text-gray-400">ML Model analyzing vulnerabilities...</p>
+                </div>
+            )}
+
+            {!showMLSuggestions && error && !data && (
                 <Card className="border-red-500 border">
                     <div className="text-red-500 text-center py-8">
                         <svg className="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        <h3 className="text-xl font-bold">Analysis Failed</h3>
+                        <h3 className="text-xl font-bold">AI Analysis Failed</h3>
                         <p className="mt-2 text-gray-300">{error}</p>
                         <p className="mt-4 text-sm text-gray-500">Ensure the FixSuggest service is running and configured.</p>
                     </div>
                 </Card>
             )}
 
-            {data && (
+            {showMLSuggestions && mlError && !mlData && (
+                <Card className="border-yellow-500 border">
+                    <div className="text-yellow-500 text-center py-8">
+                        <svg className="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        <h3 className="text-xl font-bold">ML Prediction Unavailable</h3>
+                        <p className="mt-2 text-gray-300">{mlError}</p>
+                        <p className="mt-4 text-sm text-gray-500">The ML model needs more training data. Try uploading more scans.</p>
+                    </div>
+                </Card>
+            )}
+
+            {/* AI Suggestions Display */}
+            {!showMLSuggestions && data && (
                 <div className="space-y-6">
                     {/* Summary Metrics */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -200,6 +271,106 @@ const FixSuggestions = () => {
                     ) : (
                         <div className="text-center py-10 text-gray-500">
                             No suggestions generated yet. Click "Regenerate" to start analysis.
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* ML Model Suggestions Display */}
+            {showMLSuggestions && mlData && (
+                <div className="space-y-6">
+                    {/* ML Summary Metrics */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <Card>
+                            <div className="text-gray-400 text-sm uppercase tracking-wider">Primary Fix</div>
+                            <div className="text-xl font-bold text-green-400 mt-1">{mlData.primary_fix}</div>
+                        </Card>
+                        <Card>
+                            <div className="text-gray-400 text-sm uppercase tracking-wider">Confidence</div>
+                            <div className="text-3xl font-bold text-white mt-1">
+                                {(mlData.confidence * 100).toFixed(1)}%
+                            </div>
+                        </Card>
+                        <Card>
+                            <div className="text-gray-400 text-sm uppercase tracking-wider">Total Vulnerabilities</div>
+                            <div className="text-3xl font-bold text-white mt-1">
+                                {mlData.vulnerability_summary?.total || 0}
+                            </div>
+                        </Card>
+                        <Card>
+                            <div className="text-gray-400 text-sm uppercase tracking-wider">Severity Score</div>
+                            <div className="text-3xl font-bold text-orange-400 mt-1">
+                                {mlData.vulnerability_summary?.severity_score?.toFixed(1) || 0}
+                            </div>
+                        </Card>
+                    </div>
+
+                    {/* Vulnerability Breakdown */}
+                    {mlData.vulnerability_summary && (
+                        <Card className="bg-slate-900/50">
+                            <h3 className="text-lg font-bold text-white mb-4">📊 Vulnerability Breakdown</h3>
+                            <div className="grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <div className="text-sm text-gray-400">Crypto Issues</div>
+                                    <div className="text-2xl font-bold text-red-400">
+                                        {mlData.vulnerability_summary.crypto}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-sm text-gray-400">Exposed Secrets</div>
+                                    <div className="text-2xl font-bold text-yellow-400">
+                                        {mlData.vulnerability_summary.secrets}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-sm text-gray-400">Network Findings</div>
+                                    <div className="text-2xl font-bold text-blue-400">
+                                        {mlData.vulnerability_summary.network}
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+                    )}
+
+                    {/* ML Suggestions List */}
+                    <h3 className="text-xl font-bold text-white mt-8">🤖 Recommended Fixes (ML-Based)</h3>
+                    {mlData.suggestions && mlData.suggestions.length > 0 ? (
+                        mlData.suggestions.map((item, index) => (
+                            <Card key={index} className="border border-gray-800 hover:border-green-900 transition-colors">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                            <span className="text-green-400">#{item.rank || index + 1}</span>
+                                            {item.title}
+                                        </h3>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <Badge type={item.priority === 'CRITICAL' ? 'danger' : item.priority === 'HIGH' ? 'warning' : 'info'}>
+                                                {item.priority} Priority
+                                            </Badge>
+                                            <Badge type="info">{item.category}</Badge>
+                                        </div>
+                                    </div>
+                                    <Badge type={item.confidence > 0.7 ? 'success' : 'warning'}>
+                                        {(item.confidence * 100).toFixed(1)}% Confidence
+                                    </Badge>
+                                </div>
+
+                                <div className="prose prose-invert max-w-none">
+                                    <h4 className="text-gray-300 font-semibold mt-4 mb-2">Description</h4>
+                                    <p className="text-gray-400">{item.description}</p>
+
+                                    {item.code_example && item.code_example.trim() && (
+                                        <>
+                                            <h4 className="text-gray-300 font-semibold mt-6 mb-2">Recommended Fix</h4>
+                                            <CodeBlock code={item.code_example} />
+                                        </>
+                                    )}
+                                </div>
+                            </Card>
+                        ))
+                    ) : (
+                        <div className="text-center py-10 text-gray-500">
+                            No ML predictions available for this scan.
                         </div>
                     )}
                 </div>

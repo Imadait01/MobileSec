@@ -1,6 +1,8 @@
 import axios from 'axios';
 import config from '../config';
 
+// Use APK_SCANNER directly instead of going through API Gateway
+// to avoid path rewriting issues
 const BASE_URL = config.API_URLS.APK_SCANNER;
 
 const apkScannerService = {
