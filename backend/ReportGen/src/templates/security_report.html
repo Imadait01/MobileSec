@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Report Security{{#if projectName}} - {{projectName}}{{/if}}</title>
+  <link rel="stylesheet" href="{{cssUrl}}">
+</head>
+<body>
+  <div class="cover">
+    <h1>{{#if projectName}}{{projectName}}{{else}}Report Security{{/if}}</h1>
+    <p class="meta">Generated: {{generatedAt}}</p>
+    <p class="score">Security Score: <strong>{{metrics.securityScore}}</strong></p>
+  </div>
+
+  <section class="summary">
+    <h2>Executive Summary</h2>
+    <p class="section-sub">Risk Level: <strong>{{riskLevel}}</strong></p>
+    <p>{{metrics.total}} findings — Critical: {{metrics.bySeverity.critical}} / High: {{metrics.bySeverity.high}} / Medium: {{metrics.bySeverity.medium}} / Low: {{metrics.bySeverity.low}} / Info: {{metrics.bySeverity.info}}</p>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Results by Service</h2>
+    <p class="section-sub">Each service below shows the findings imported from that microservice.</p>
+
+    {{#if services}}
+      {{#each services}}
+        <div class="service-block">
+          <h3 class="section-title">{{@key}} <span class="service-counts">{{this.counts.total}} findings — H: {{this.counts.bySeverity.high}} / M: {{this.counts.bySeverity.medium}} / L: {{this.counts.bySeverity.low}} / I: {{this.counts.bySeverity.info}}</span></h3>
+          {{#if this.findings}}
+            <table>
+              <thead>
+                <tr><th>Severity</th><th>Title</th><th>Description</th><th>File</th><th>Line</th></tr>
+              </thead>
+              <tbody>
+                {{#each this.findings}}
+                  <tr>
+                    <td><span class="sev sev-{{severity}}">{{severity}}</span></td>
+                    <td>{{title}}</td>
+                    <td>{{description}}</td>
+                    <td>{{file}}</td>
+                    <td class="right">{{line}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          {{else}}
+            <p class="muted small">No findings reported by this service.</p>
+          {{/if}}
+
+          {{#if this.rawString}}
+            <div class="service-raw">
+              <h4>Raw service output</h4>
+              <pre>{{{escapeCode this.rawString}}}</pre>
+            </div>
+          {{/if}}
+        </div>
+      {{/each}}
+    {{else}}
+      <p class="muted small">No per-service results available.</p>
+    {{/if}}
+  </section>
+
+  <section class="findings">
+    <h2>All Findings</h2>
+    {{#each vulnerabilities}}
+      <article class="finding">
+        <h3>{{title}} <span class="sev sev-{{severity}}">{{severity}}</span></h3>
+        <p class="desc">{{description}}</p>
+        {{#if proof}}<pre class="proof">{{{escapeCode proof}}}</pre>{{/if}}
+        {{#if recommendation}}<p class="rec">Recommendation: {{recommendation}}</p>{{/if}}
+      </article>
+    {{/each}}
+  </section>
+
+  <footer>
+    <div class="footer-left">{{projectName}} — Generated on {{generatedAt}}</div>
+    <div class="footer-right">Page <span class="pageNumber"></span> / <span class="totalPages"></span></div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+/* SECURITY REPORT - Structured CSS
+   - Variables for theme
+   - Layout: container, cover, sections
+   - Typography & spacing
+   - Severity badges with accessible contrast
+   - Tables and code/proof blocks
+   - Print-friendly rules (avoid broken sections)
+*/
+:root{
+  --bg: #ffffff;
+  --text: #111216;
+  --muted: #6b7280;
+  --accent: #0b5fff;
+  --surface: #f8fafc;
+  --primary: #0b5fff;
+  --critical: #d62828; /* red */
+  --high: #ff7a29; /* orange */
+  --medium: #f8b400; /* yellow */
+  --low: #2ea44f; /* green */
+  --info: #0ea5e9; /* cyan */
+  --max-width: 960px;
+  --font-family: "Inter", Arial, Helvetica, sans-serif;
+  --radius: 8px;
+}
+
+html,body{height:100%;background:var(--bg);}
+body{
+  font-family: var(--font-family);
+  color:var(--text);
+  margin:0;
+  padding:28px;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.45;
+}
+
+.report-container{
+  max-width:var(--max-width);
+  margin:0 auto;
+  background:transparent;
+  padding-bottom:72px; /* ensure footer doesn't overlap */
+}
+
+/* Cover / Header */
+.cover{display:flex;flex-direction:row;align-items:center;justify-content:space-between;margin-bottom:28px;gap:16px}
+.cover .title{flex:1}
+.cover h1{font-size:26px;margin:0 0 6px 0}
+.cover .meta{color:var(--muted);font-size:0.95rem}
+.cover .logo{width:120px;max-height:56px;object-fit:contain}
+
+/* Score / Overview */
+.overview{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+.score{
+  background:linear-gradient(180deg, rgba(11,95,255,0.08), rgba(11,95,255,0.03));
+  padding:12px 16px;border-radius:8px;font-weight:600;color:var(--primary);
+}
+.summary{background:var(--surface);border-radius:var(--radius);padding:14px;box-shadow:0 1px 0 rgba(0,0,0,0.03);margin-bottom:20px}
+
+.section{margin-bottom:18px}
+.section-title{font-size:1.05rem;font-weight:700;margin:0 0 8px 0;color:var(--text)}
+.section-sub{color:var(--muted);font-size:0.95rem;margin-bottom:10px}
+
+/* Findings */
+.findings{border-top:1px solid #eef2f7;padding-top:8px}
+.finding{display:block;border-left:4px solid #f1f5f9;padding:12px 14px;margin:10px 0;border-radius:6px;background:#fff}
+.finding h3{margin:0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.finding .meta{font-size:0.9rem;color:var(--muted)}
+
+/* Severity badges */
+.sev{display:inline-block;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:700;color:#fff;letter-spacing:0.2px}
+.sev-critical{background:var(--critical)}
+.sev-high{background:var(--high);color:#fff}
+.sev-medium{background:var(--medium);color:#111}
+.sev-low{background:var(--low);color:#fff}
+.sev-info{background:var(--info);color:#fff}
+/* Optional emoji for quick visual identification (non-essential) */
+.sev::before{content:"";display:inline-block;margin-right:6px}
+.sev-critical::before{content:"⚠️"}
+.sev-high::before{content:"🔺"}
+.sev-medium::before{content:"🔶"}
+.sev-low::before{content:"✅"}
+.sev-info::before{content:"ℹ️"}
+
+/* Proof / code block */
+.proof{background:#f7f9fb;padding:10px;border-radius:6px;overflow:auto;font-family:monospace;font-size:12px;color:#0b0b0b;margin-top:10px;border:1px solid #edf2f7}
+.proof pre{margin:0;white-space:pre-wrap;word-break:break-word}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eef2f7}
+th{background:#fbfdff;color:var(--muted);font-weight:700}
+tr:nth-child(even) td{background:#fff}
+
+/* Footer */
+.footer{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;padding:10px 0}
+.footer .left{flex:1}
+.footer .right{flex:0}
+
+/* Utilities */
+.muted{color:var(--muted)}
+.small{font-size:0.85rem}
+.right{text-align:right}
+.center{text-align:center}
+.badge{display:inline-block;padding:6px 10px;border-radius:6px;background:#eef2ff;color:var(--primary);font-weight:700}
+
+/* Prevent breaking inside important blocks when printing */
+.finding, .proof, .summary, table, pre{page-break-inside:avoid; -webkit-column-break-inside:avoid; -webkit-page-break-inside:avoid}
+
+/* Print Styles */
+@media print{
+  body{padding:10mm;color-adjust:exact; -webkit-print-color-adjust:exact}
+  .report-container{max-width:100%;padding:0}
+  /* Remove shadows and rounded corners for print clarity */
+  .summary, .finding{box-shadow:none;border-radius:0;border-left-width:4px}
+  .cover{margin-bottom:10px}
+  footer{position:fixed;bottom:0}
+  .no-print{display:none}
+}
+
+/* Per-service counts */
+.service-counts{float:right;font-size:0.95rem;color:var(--muted);font-weight:600;background:#f1f5f9;padding:6px 10px;border-radius:8px}
+
+/* Table visual refinements */
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #eef2f7}
+th{background:#fbfdff;color:var(--muted);font-weight:700}
+
+/* Responsive small screens (useful for preview) */
+@media (max-width:640px){
+  .cover{flex-direction:column;align-items:flex-start}
+  .cover .logo{width:80px}
+  body{padding:16px}
+}
+
+/* Accessibility focus states */
+a:focus, button:focus{outline:3px solid rgba(11,95,255,0.18);outline-offset:3px}
+
+/* Service raw JSON block */
+.service-raw{margin-top:12px;background:#fbfdff;border:1px solid #eef6ff;padding:10px;border-radius:6px}
+.service-raw h4{margin:0 0 8px 0;font-size:0.95rem}
+.service-raw pre{background:#f7f9fb;padding:10px;border-radius:6px;overflow:auto;font-family:monospace;font-size:11px;color:#0b0b0b;white-space:pre-wrap;word-break:break-word;border:1px solid #edf2f7}
+
+/* End of stylesheet */

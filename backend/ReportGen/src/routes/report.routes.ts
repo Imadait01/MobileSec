@@ -69,6 +69,51 @@ router.post('/generate', reportController.generateReport);
 
 /**
  * @swagger
+ * /api/reports:
+ *   post:
+ *     summary: Génère un rapport (PDF / JSON / SARIF) à partir de résultats fournis
+ *     tags: [Reports]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/GenerateReportRequest'
+ *     responses:
+ *       200:
+ *         description: Rapport généré (PDF binary for format=pdf, JSON for json/sarif)
+ */
+router.post('/', reportController.createReport);
+
+/**
+ * @swagger
+ * /api/reports/pdf:
+ *   post:
+ *     summary: Génère ou retourne un PDF à la demande (accepts reportId, requestData or report in body)
+ *     tags: [Reports]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reportId:
+ *                 type: string
+ *               requestData:
+ *                 type: object
+ *               report:
+ *                 type: object
+ *               options:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: PDF generated or returned
+ */
+router.post('/pdf', reportController.generatePdf);
+
+/**
+ * @swagger
  * /api/reports/upload:
  *   post:
  *     summary: Génère un rapport à partir d'un fichier JSON uploadé
@@ -148,6 +193,12 @@ router.post('/generate-from-folder', reportController.generateFromFolder);
  */
 router.post('/generate-from-scan', reportController.generateFromScan);
 
+// Synchronous JSON generation endpoint
+router.post('/generate-json-from-scan', reportController.generateJsonNow);
+
+// Puppeteer health check
+router.get('/status/puppeteer', reportController.puppeteerStatus);
+
 /**
  * @swagger
  * /api/reports/input-files:
@@ -223,6 +274,9 @@ router.get('/', reportController.listReports);
  *         description: Rapport non trouvé
  */
 router.get('/:reportId', reportController.getReportInfo);
+
+// Summary JSON endpoint (including per-service details when available)
+router.get('/:reportId/summary', reportController.getReportSummary);
 
 /**
  * @swagger

@@ -1,0 +1,10 @@
+{
+  "format": "pdf",
+  "template": "security_report",
+  "metadata": { "appName": "DemoDemo" },
+  "results": {
+    "secretHunter": [
+      { "title": "Hardcoded secret", "description": "Found secret in code", "severity": "high" }
+    ]
+  }
+}

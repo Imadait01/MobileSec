@@ -1,107 +1,66 @@
-# Build stage
-FROM node:20-slim AS builder
-
+# ReportGen Dockerfile (Debian-based for Puppeteer compatibility)
+# Builder stage (with dev deps to compile TypeScript)
+FROM node:18-bullseye-slim AS builder
 WORKDIR /app
-
-# Installer les dépendances système nécessaires pour Puppeteer
-RUN apt-get update && apt-get install -y \
-    chromium \
-    fonts-liberation \
-    libappindicator3-1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libdrm2 \
-    libgbm1 \
-    libgtk-3-0 \
-    libnspr4 \
-    libnss3 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    xdg-utils \
-    --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copier les fichiers de dépendances
-COPY package*.json ./
-
-# Installer les dépendances
-# Utiliser npm install car package-lock.json peut être absent ou désynchronisé
+COPY package.json ./
 RUN npm install
-
-# Copier le code source
+# Force Puppeteer to download Chromium at build time so runtime has browser available
+RUN node -e "try { require('puppeteer'); console.log('puppeteer OK'); } catch (e) { console.error('puppeteer install check failed', e); process.exit(0); }"
 COPY . .
-
-# Build TypeScript
 RUN npm run build
 
-# Production stage
-FROM node:20-slim
+# Runtime stage
+FROM node:18-bullseye-slim
+
+# Install dependencies required by Chromium/Puppeteer
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  ca-certificates \
+  fonts-liberation \
+  libasound2 \
+  libatk1.0-0 \
+  libcups2 \
+  libdbus-1-3 \
+  libgdk-pixbuf2.0-0 \
+  libgtk-3-0 \
+  libx11-xcb1 \
+  libxcomposite1 \
+  libxdamage1 \
+  libxrandr2 \
+  libxss1 \
+  libnss3 \
+  libgbm1 \
+  libpangocairo-1.0-0 \
+  fonts-noto-color-emoji \
+  wget \
+  gnupg \
+  ca-certificates \
+  --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Installer Chromium pour Puppeteer en production
-RUN apt-get update && apt-get install -y \
-    chromium \
-    dumb-init \
-    fonts-liberation \
-    libappindicator3-1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libdrm2 \
-    libgbm1 \
-    libgtk-3-0 \
-    libnspr4 \
-    libnss3 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    xdg-utils \
-    --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+# Copy only production deps
+COPY package.json ./
+RUN npm install --only=production
 
-# Configuration Puppeteer pour utiliser Chromium système
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
-
-# Créer un utilisateur non-root
-RUN groupadd -r reportgen && useradd -r -g reportgen reportgen
-
-# Copier les fichiers nécessaires depuis le builder
+# Copy built artifacts and templates from builder
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/src/templates ./dist/templates
+COPY --from=builder /app/src/templates ./src/templates
+COPY --from=builder /app/src/templates/assets ./src/templates/assets
+COPY --from=builder /app/package.json ./package.json
 
-# Créer le dossier temporaire
-RUN mkdir -p /app/tmp && chown -R reportgen:reportgen /app
+# Copy Puppeteer's downloaded Chromium from builder to a path accessible by the runtime 'node' user
+COPY --from=builder /root/.cache/puppeteer /home/node/.cache/puppeteer
+RUN chown -R node:node /home/node/.cache/puppeteer || true
 
-# Variables d'environnement par défaut
-ENV NODE_ENV=production
+# Create tmp and reports directories
+RUN mkdir -p /app/tmp /app/reports && chown -R node:node /app/tmp /app/reports
+
+# Use non-root user
+# Keep default user (root) so we can chown mounted volumes at startup
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+ENV PUPPETEER_CACHE_DIR=/home/node/.cache/puppeteer
 ENV PORT=3005
-ENV TEMP_DIR=/app/tmp
-ENV LOG_LEVEL=info
+EXPOSE ${PORT}
 
-# Changer vers l'utilisateur non-root
-USER reportgen
-
-# Exposer le port
-EXPOSE 3005
-
-# Healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3005/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
-
-
-
-# Démarrer l'application avec dumb-init
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["node", "dist/app.js"]
+# On container start: ensure mounted volumes are writable by the 'node' user, then drop privileges to run as 'node'
+CMD ["sh", "-c", "chown -R node:node /app/tmp /app/reports 2>/dev/null || true; su node -c 'node dist/app.js'"]

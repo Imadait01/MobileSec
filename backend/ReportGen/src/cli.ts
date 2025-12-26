@@ -32,7 +32,7 @@ const CONFIG = {
   projectName: process.env.PROJECT_NAME || 'Security Scan Report',
   format: (process.env.REPORT_FORMAT || 'pdf') as 'pdf' | 'json' | 'sarif',
   outputDir: process.env.OUTPUT_DIR || './reports',
-  template: process.env.REPORT_TEMPLATE || 'softwareX',
+  template: process.env.REPORT_TEMPLATE || 'security_report',
   companyName: process.env.COMPANY_NAME || 'Security Team',
   inputDir: process.env.INPUT_DIR || './input',
   autoOpen: process.env.AUTO_OPEN === 'true',
