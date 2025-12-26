@@ -74,13 +74,20 @@ class SuggestionGenerator:
             masvs_rule_id=masvs_rule.rule_id if masvs_rule else None,
             masvs_rule_title=masvs_rule.title if masvs_rule else None,
             
-            # Recommandations
+            # Recommandations enrichies
             original_recommendation=masvs_rule.recommendation if masvs_rule else None,
             enriched_recommendation=llm_result.get("recommendation", ""),
+            analysis=llm_result.get("analysis", ""),
             
-            # Patch de code
+            # Code patches détaillés
             patch_code=llm_result.get("patch_code", "") if include_patch else None,
+            before_code=llm_result.get("before_code"),
+            after_code=llm_result.get("after_code"),
             patch_language=language if include_patch and llm_result.get("patch_code") else None,
+            
+            # Conseils et références
+            additional_tips=llm_result.get("additional_tips", []),
+            owasp_references=llm_result.get("owasp_references", []),
             
             # Métadonnées
             confidence=0.95 if masvs_rule and self.nova_client.is_configured else 0.7,

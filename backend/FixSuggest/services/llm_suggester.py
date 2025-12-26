@@ -96,28 +96,69 @@ class NovaClient:
             if masvs_rule.references:
                 masvs_info += f"- **Références**: {', '.join(masvs_rule.references)}\n"
         
-        # Prompt complet
+        # Prompt amélioré pour des solutions ultra-détaillées
         prompt = f"""Tu es un expert en sécurité des applications mobiles Android.
-Analyse la vulnérabilité suivante et fournis une recommandation de correction détaillée.
+Analyse la vulnérabilité suivante et fournis une solution TRÈS DÉTAILLÉE ET CONCRÈTE.
 
 {vuln_info}
 {masvs_info}
 
 ## Ta Mission
-1. **Analyse**: Explique brièvement pourquoi cette vulnérabilité est dangereuse.
-2. **Recommandation**: Fournis une recommandation détaillée et actionnable pour corriger cette vulnérabilité.
-3. **Patch de Code**: Génère un exemple de code corrigé en {language}.
+Fournis une solution COMPLÈTE et ACTIONNABLE (PAS de simples commentaires !):
 
-## Format de Réponse (JSON)
+1. **Analyse du risque** (2-3 phrases expliquant CONCRÈTEMENT pourquoi c'est dangereux avec des exemples d'attaques possibles)
+2. **Solution détaillée** (étapes PRÉCISES de correction, pas de généralités)
+3. **Code corrigé COMPLET** (CODE FONCTIONNEL en {language}, PAS juste "// Follow OWASP guidelines")
+4. **Conseils pratiques** (tests à faire, bonnes pratiques, outils à utiliser)
+
+## RÈGLES IMPORTANTES
+❌ NE DONNE PAS de simples commentaires comme "// Follow OWASP cryptographic guidelines"
+❌ NE DONNE PAS de conseils vagues comme "Use secure algorithms"
+✅ FOURNIS du CODE COMPLET et FONCTIONNEL avec tous les imports nécessaires
+✅ MONTRE le code AVANT (vulnérable) et APRÈS (corrigé) si possible
+✅ INCLUS des exemples CONCRETS et TESTABLES
+✅ EXPLIQUE pourquoi chaque changement améliore la sécurité
+
+## Format de Réponse (JSON STRICT)
 Réponds UNIQUEMENT avec un JSON valide dans ce format exact:
 {{
-    "analysis": "Explication courte du risque",
-    "recommendation": "Recommandation détaillée pour la correction",
-    "patch_code": "Code corrigé complet",
-    "additional_tips": ["Conseil 1", "Conseil 2"]
+    "analysis": "Explication DÉTAILLÉE du risque avec exemples concrets d'exploitation. Minimum 50 mots.",
+    "recommendation": "Solution pas à pas TRÈS DÉTAILLÉE avec toutes les étapes techniques. Minimum 100 mots.",
+    "patch_code": "CODE COMPLET FONCTIONNEL avec imports et contexte. Si plusieurs fichiers affectés, sépare avec des commentaires.",
+    "before_code": "Code vulnérable exact (si disponible dans le snippet)",
+    "after_code": "Code sécurisé complet qui remplace le code vulnérable",
+    "additional_tips": [
+        "Conseil technique précis 1 (ex: 'Utiliser SecureRandom au lieu de Random')",
+        "Conseil technique précis 2 (ex: 'Ajouter un test unitaire vérifiant l'algorithme')",
+        "Conseil technique précis 3 (ex: 'Activer ProGuard pour obscurcir le code crypto')"
+    ],
+    "owasp_references": [
+        "Lien vers documentation OWASP pertinente",
+        "Lien vers Android Security Best Practices"
+    ]
 }}
 
-Réponds maintenant:"""
+EXEMPLE de BONNE réponse pour une vulnérabilité DES:
+{{
+    "analysis": "L'algorithme DES (Data Encryption Standard) utilisé ici est obsolète depuis 1999. Avec seulement 56 bits de clé effective, il peut être cassé par force brute en quelques heures sur du matériel moderne. Un attaquant interceptant le trafic réseau pourrait déchiffrer toutes vos données sensibles (mots de passe, tokens, informations personnelles). Le NIST a officiellement retiré DES en 2005.",
+    "recommendation": "Remplacez immédiatement DES par AES-256 en mode GCM (Galois/Counter Mode). Étapes: 1) Générez une clé AES de 256 bits avec KeyGenerator. 2) Utilisez un IV (vecteur d'initialisation) aléatoire de 12 bytes généré avec SecureRandom. 3) Configurez GCMParameterSpec avec 128 bits de tag d'authentification. 4) Stockez l'IV avec les données chiffrées (non secret). 5) Utilisez Android Keystore pour protéger la clé. 6) Implémentez la rotation des clés tous les 90 jours.",
+    "patch_code": "import javax.crypto.Cipher;\\nimport javax.crypto.KeyGenerator;\\nimport javax.crypto.SecretKey;\\nimport javax.crypto.spec.GCMParameterSpec;\\nimport java.security.SecureRandom;\\n\\npublic class SecureEncryption {{\\n    private static final int GCM_IV_LENGTH = 12;\\n    private static final int GCM_TAG_LENGTH = 128;\\n    \\n    public byte[] encrypt(byte[] data, SecretKey key) throws Exception {{\\n        // Générer IV aléatoire\\n        byte[] iv = new byte[GCM_IV_LENGTH];\\n        new SecureRandom().nextBytes(iv);\\n        \\n        // Configurer AES-GCM\\n        Cipher cipher = Cipher.getInstance(\\"AES/GCM/NoPadding\\");\\n        GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);\\n        cipher.init(Cipher.ENCRYPT_MODE, key, spec);\\n        \\n        // Chiffrer\\n        byte[] encrypted = cipher.doFinal(data);\\n        \\n        // Retourner IV + données chiffrées\\n        byte[] result = new byte[iv.length + encrypted.length];\\n        System.arraycopy(iv, 0, result, 0, iv.length);\\n        System.arraycopy(encrypted, 0, result, iv.length, encrypted.length);\\n        \\n        return result;\\n    }}\\n}}",
+    "before_code": "Cipher cipher = Cipher.getInstance(\\"DES\\");\\ncipher.init(Cipher.ENCRYPT_MODE, key);\\nbyte[] encrypted = cipher.doFinal(data);",
+    "after_code": "// Générer IV aléatoire\\nbyte[] iv = new byte[12];\\nnew SecureRandom().nextBytes(iv);\\n\\n// Configurer AES-GCM\\nCipher cipher = Cipher.getInstance(\\"AES/GCM/NoPadding\\");\\nGCMParameterSpec spec = new GCMParameterSpec(128, iv);\\ncipher.init(Cipher.ENCRYPT_MODE, key, spec);\\n\\n// Chiffrer et inclure IV\\nbyte[] encrypted = cipher.doFinal(data);\\nbyte[] result = new byte[iv.length + encrypted.length];\\nSystem.arraycopy(iv, 0, result, 0, iv.length);\\nSystem.arraycopy(encrypted, 0, result, iv.length, encrypted.length);",
+    "additional_tips": [
+        "Utilisez KeyGenerator.getInstance(\\"AES\\") avec 256 bits pour générer des clés",
+        "Stockez les clés dans Android Keystore avec setEncryptionRequired(true)",
+        "Ajoutez un test unitaire vérifiant que getInstance retourne bien AES/GCM",
+        "Activez StrongBoxKeymaster sur les appareils Android 9+",
+        "Loggez les tentatives de déchiffrement échouées pour détecter les attaques"
+    ],
+    "owasp_references": [
+        "https://mobile-security.gitbook.io/masvs/security-requirements/0x07-v2-data_storage_and_privacy_requirements",
+        "https://developer.android.com/privacy-and-security/cryptography"
+    ]
+}}
+
+Réponds maintenant avec le même niveau de détail pour la vulnérabilité ci-dessus:"""
 
         return prompt
     
@@ -202,7 +243,10 @@ Réponds maintenant:"""
                         "analysis": suggestion_data.get("analysis", ""),
                         "recommendation": suggestion_data.get("recommendation", ""),
                         "patch_code": suggestion_data.get("patch_code", ""),
+                        "before_code": suggestion_data.get("before_code"),
+                        "after_code": suggestion_data.get("after_code"),
                         "additional_tips": suggestion_data.get("additional_tips", []),
+                        "owasp_references": suggestion_data.get("owasp_references", []),
                         "model_used": self.model
                     }
                     

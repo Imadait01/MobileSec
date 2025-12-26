@@ -257,12 +257,33 @@ async def generate_suggestions_for_scan(
     suggestions = []
     for vuln in vuln_data["vulnerabilities"]:
         try:
-            suggestion = await nova_client.generate_natural_suggestion_async(vuln)
-            suggestions.append(suggestion)
+            llm_suggestion = await nova_client.generate_natural_suggestion_async(vuln)
+            
+            # Mapper les champs vers le format attendu par le frontend
+            frontend_suggestion = {
+                "vulnerability_id": llm_suggestion.get("vulnerability_id"),
+                "masvs_category": llm_suggestion.get("tool", "General"),
+                "masvs_title": llm_suggestion.get("titre_simple") or llm_suggestion.get("vulnerability_title", "Security Issue"),
+                "explanation": (llm_suggestion.get("explication", "") + "\n\n" + llm_suggestion.get("solution", "")).strip(),
+                "suggested_patch": llm_suggestion.get("exemple_correction") or "",
+                "confidence": 0.7,  # Default confidence
+                "references": llm_suggestion.get("owasp_references", [])
+            }
+            suggestions.append(frontend_suggestion)
         except Exception as e:
             logger.error(f"❌ Erreur génération suggestion pour {vuln.get('id')}: {e}")
             # Ajouter une suggestion fallback
-            suggestions.append(nova_client._generate_natural_fallback(vuln))
+            llm_fallback = nova_client._generate_natural_fallback(vuln)
+            frontend_suggestion = {
+                "vulnerability_id": vuln.get("id"),
+                "masvs_category": vuln.get("tool", "General"),
+                "masvs_title": vuln.get("title", "Security Issue"),
+                "explanation": llm_fallback.get("explication", "") + "\n\n" + llm_fallback.get("solution", ""),
+                "suggested_patch": llm_fallback.get("exemple_correction") or "",
+                "confidence": 0.5,
+                "references": []
+            }
+            suggestions.append(frontend_suggestion)
     
     # Sauvegarder dans MongoDB
     model_used = nova_client.model if nova_client.is_configured else "fallback"

@@ -16,7 +16,6 @@ const fixSuggestService = {
     getSuggestions: async (scanId, regenerate = false) => {
         try {
             // Endpoint: /api/v1/suggest/scan/{scan_id}?regenerate={bool}
-            // FixSuggest exposes routes under /api/v1 (main includes prefix '/api/v1')
             const response = await axios.get(`${API_URL}/api/v1/suggest/scan/${scanId}`, {
                 params: { regenerate }
             });

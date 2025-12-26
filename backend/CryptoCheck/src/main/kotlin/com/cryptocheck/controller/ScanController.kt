@@ -3,6 +3,7 @@ package com.cryptocheck.controller
 import com.cryptocheck.model.CryptoResult
 import com.cryptocheck.model.ScanReport
 import com.cryptocheck.model.ScanRequest
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.cryptocheck.service.ScanService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -189,7 +190,7 @@ class ScanController(
      * Classe de requête pour l'analyse depuis MongoDB
      */
     data class AnalyzeRequest(
-        val scanId: String
+        @JsonProperty("scan_id") val scanId: String
     )
     
     /**
