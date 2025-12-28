@@ -41,18 +41,6 @@ const Sidebar = () => {
                     ))}
                 </ul>
             </nav>
-
-            <div className="absolute bottom-0 w-full p-4 border-t border-slate-200 dark:border-slate-800">
-                <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs text-slate-600 dark:text-white">
-                        AU
-                    </div>
-                    <div className="ml-3">
-                        <p className="text-sm font-medium text-slate-700 dark:text-white">Admin User</p>
-                        <p className="text-xs text-slate-500">SecOps Team</p>
-                    </div>
-                </div>
-            </div>
         </aside>
     );
 };
