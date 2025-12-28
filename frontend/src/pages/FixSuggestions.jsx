@@ -42,24 +42,24 @@ const FixSuggestions = () => {
             setLoading(true);
             if (forceRegenerate) setRegenerating(true);
 
-            // Essayer d'abord le cache si on ne force pas
-            let response;
-            if (!forceRegenerate) {
-                try {
-                    response = await fixSuggestService.getCachedSuggestions(scanId);
-                } catch (e) {
-                    // Cache miss, generate
-                    response = await fixSuggestService.getSuggestions(scanId, false);
-                }
-            } else {
-                response = await fixSuggestService.getSuggestions(scanId, true);
-            }
+            // Use ML-prioritized suggestions endpoint
+            const response = await fixSuggestService.getMLPrioritizedSuggestions(scanId, 10);
 
-            setData(response);
+            // Transform to match expected format if needed
+            const transformedData = {
+                status: response.status || 'success',
+                scan_id: scanId,
+                suggestions_count: response.total_suggestions || 0,
+                suggestions: response.suggestions || [],
+                model_used: response.model_used || 'lightgbm + amazon/nova-lite-v1',
+                generated_at: new Date().toISOString()
+            };
+
+            setData(transformedData);
             setError(null);
         } catch (err) {
             console.error(err);
-            setError('Impossible de charger les suggestions. Le service est peut-être indisponible.');
+            setError('Impossible de charger les suggestions ML. Le service est peut-être indisponible.');
         } finally {
             setLoading(false);
             setRegenerating(false);
@@ -233,17 +233,41 @@ const FixSuggestions = () => {
                                             <span className="text-gray-500 text-sm">Vulnerability ID: {item.vulnerability_id}</span>
                                         </div>
                                     </div>
-                                    {getConfidenceBadge(item.confidence)}
+                                    <div>
+                                        {item.lightgbm_confidence !== undefined && item.lightgbm_confidence !== null ? (
+                                            <div className="text-right">
+                                                <Badge type={
+                                                    item.lightgbm_confidence >= 0.8 ? 'success' :
+                                                        item.lightgbm_confidence >= 0.5 ? 'warning' : 'danger'
+                                                }>
+                                                    ML Priority: {(item.lightgbm_confidence * 100).toFixed(0)}%
+                                                </Badge>
+                                                {item.priority_rank && (
+                                                    <div className="text-xs text-gray-500 mt-1">Rank #{item.priority_rank}</div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            getConfidenceBadge(item.confidence)
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="prose prose-invert max-w-none">
                                     <h4 className="text-gray-300 font-semibold mt-4 mb-2">Analysis & Explanation</h4>
-                                    <p className="text-gray-400 whitespace-pre-wrap">{item.explanation}</p>
+                                    {item.analysis && (
+                                        <>
+                                            <p className="text-gray-400 whitespace-pre-wrap mb-4">{item.analysis}</p>
+                                            <h5 className="text-gray-300 font-semibold mt-4 mb-2">Recommendation</h5>
+                                        </>
+                                    )}
+                                    <p className="text-gray-400 whitespace-pre-wrap">
+                                        {item.enriched_recommendation || item.explanation || 'No detailed recommendation available.'}
+                                    </p>
 
-                                    {item.suggested_patch && (
+                                    {(item.patch_code || item.suggested_patch) && (
                                         <>
                                             <h4 className="text-gray-300 font-semibold mt-6 mb-2">Recommended Fix</h4>
-                                            <CodeBlock code={item.suggested_patch} />
+                                            <CodeBlock code={item.patch_code || item.suggested_patch} language={item.patch_language || 'java'} />
                                         </>
                                     )}
 

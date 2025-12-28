@@ -1,0 +1,696 @@
+﻿docker : {"level":"WARN","timestam
+p":"2025-12-27T18:41:23.561Z","log
+ger":"kafkajs","message":"KafkaJS 
+v2.0.0 switched default 
+partitioner. To retain the same 
+partitioning behavior as in 
+previous versions, create the 
+producer with the option 
+\"createPartitioner: 
+Partitioners.LegacyPartitioner\". 
+See the migration guide at https:/
+/kafka.js.org/docs/migration-guide
+-v2.0.0#producer-new-default-parti
+tioner for details. Silence this 
+warning by setting the 
+environment variable \"KAFKAJS_NO_
+PARTITIONER_WARNING=1\""}
+Au caractère Ligne:1 : 1
++ docker logs reportgen 2>&1 | 
+Out-File -FilePath 
+"c:\Users\hp\Desktop\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : Not 
+   Specified: ({"level":"WARN"..  
+  .R_WARNING=1\""}:String) [],    
+ RemoteException
+    + FullyQualifiedErrorId : Nat 
+   iveCommandError
+ 
+info: ReportGen: Connecting to Kafka... {"timestamp":"2025-12-27T18:41:23.606Z"}
+info: ReportGen: Kafka producer connected {"timestamp":"2025-12-27T18:41:23.618Z"}
+info: ReportGen: Connected. Subscribing... {"timestamp":"2025-12-27T18:41:23.622Z"}
+info: ReportGen: Subscribed to scan-requests {"timestamp":"2025-12-27T18:41:23.629Z"}
+info: ReportGen: Subscribed to scan-results {"timestamp":"2025-12-27T18:41:23.631Z"}
+{"level":"INFO","timestamp":"2025-12-27T18:41:23.631Z","logger":"kafkajs","message":"[Consumer] Starting","groupId":"reportgen-group"}
+{"level":"INFO","timestamp":"2025-12-27T18:41:48.526Z","logger":"kafkajs","message":"[ConsumerGroup] Consumer has joined the group","groupId":"reportgen-group","memberId":"reportgen-service-df9cafa8-611f-47a1-9de3-9552bd0f9688","leaderId":"reportgen-service-df9cafa8-611f-47a1-9de3-9552bd0f9688","isLeader":true,"memberAssignment":{"scan-requests":[0],"scan-results":[0]},"groupProtocol":"RoundRobinAssigner","duration":24894}
+info: ReportGen listening on port 3005 {"timestamp":"2025-12-27T18:41:48.572Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Aptoide","reportId":"17f912a2-5193-4076-a7c1-0f917ffcfe0d","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"e7141934-6806-4f69-98af-903772d6e128","timestamp":"2025-12-27T18:41:55.554Z"}
+info: Constructed report, services keys {"reportId":"17f912a2-5193-4076-a7c1-0f917ffcfe0d","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:41:55.643Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:41:55.679Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-17f912a2-5193-4076-a7c1-0f917ffcfe0d.html","out":"/app/tmp/report-17f912a2-5193-4076-a7c1-0f917ffcfe0d.pdf","timestamp":"2025-12-27T18:41:55.963Z"}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-17f912a2-5193-4076-a7c1-0f917ffcfe0d.pdf","timestamp":"2025-12-27T18:42:17.516Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"e7141934-6806-4f69-98af-903772d6e128\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"e7141934-6806-4f69-98af-903772d6e128"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"e7141934-6806-4f69-98af-903772d6e128"}},"reportId":"17f912a2-5193-4076-a7c1-0f917ffcfe0d","timestamp":"2025-12-27T18:42:17.570Z"}
+info: Report generation completed {"duration":22,"format":"pdf","reportId":"17f912a2-5193-4076-a7c1-0f917ffcfe0d","timestamp":"2025-12-27T18:42:17.571Z","vulnerabilities":3152}
+info: Report downloaded {"format":"pdf","reportId":"17f912a2-5193-4076-a7c1-0f917ffcfe0d","timestamp":"2025-12-27T18:42:19.608Z"}
+info: ReportGen: Received message on scan-requests: {"id": "83bdf17c-9ad0-4027-98ae-a2ef822d8191", "apk_path": "83bdf17c-9ad0-4027-98ae-a2ef822d8191_uptodown-com.glovo.apk", "timestamp": "2025-12-27T18:44:22.041879"} {"timestamp":"2025-12-27T18:44:22.050Z"}
+info: Received scan request: 83bdf17c-9ad0-4027-98ae-a2ef822d8191 {"timestamp":"2025-12-27T18:44:22.051Z"}
+info: Polling scan 83bdf17c-9ad0-4027-98ae-a2ef822d8191 attempt 1/12. Found: APK=true Net=false Sec=true Cry=true {"timestamp":"2025-12-27T18:44:22.126Z"}
+info: Polling scan 83bdf17c-9ad0-4027-98ae-a2ef822d8191 attempt 2/12. Found: APK=true Net=true Sec=true Cry=true {"timestamp":"2025-12-27T18:44:32.247Z"}
+[1m[43m[30m
+info: Generating Report for 83bdf17c-9ad0-4027-98ae-a2ef822d8191 {"timestamp":"2025-12-27T18:44:32.248Z"}
+info: Ô£à JSON Report Generated and Saved via Kafka Trigger: a32a105f-1fd6-4f23-a880-d4fe1cbf4449 {"timestamp":"2025-12-27T18:44:32.462Z"}
+info: Published report-generated event for a32a105f-1fd6-4f23-a880-d4fe1cbf4449 to report-generated {"timestamp":"2025-12-27T18:44:32.494Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan 83bdf17c-9ad0-4027-98ae-a2ef822d8191","reportId":"229e850f-e5aa-4286-aafd-92b3edca138c","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"83bdf17c-9ad0-4027-98ae-a2ef822d8191","timestamp":"2025-12-27T18:44:41.246Z"}
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+info: Constructed report, services keys {"reportId":"229e850f-e5aa-4286-aafd-92b3edca138c","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:44:41.251Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:44:41.255Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-229e850f-e5aa-4286-aafd-92b3edca138c.html","out":"/app/tmp/report-229e850f-e5aa-4286-aafd-92b3edca138c.pdf","timestamp":"2025-12-27T18:44:41.311Z"}
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-229e850f-e5aa-4286-aafd-92b3edca138c.pdf","timestamp":"2025-12-27T18:44:48.712Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"83bdf17c-9ad0-4027-98ae-a2ef822d8191\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"83bdf17c-9ad0-4027-98ae-a2ef822d8191"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"83bdf17c-9ad0-4027-98ae-a2ef822d8191"}},"reportId":"229e850f-e5aa-4286-aafd-92b3edca138c","timestamp":"2025-12-27T18:44:48.715Z"}
+info: Report generation completed {"duration":7,"format":"pdf","reportId":"229e850f-e5aa-4286-aafd-92b3edca138c","timestamp":"2025-12-27T18:44:48.716Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"229e850f-e5aa-4286-aafd-92b3edca138c","timestamp":"2025-12-27T18:44:49.517Z"}
+info: ReportGen: Received message on scan-requests: {"id": "de653dd6-dde9-48d3-93fb-7a863e1f0a2c", "apk_path": "de653dd6-dde9-48d3-93fb-7a863e1f0a2c_uptodown-com.glovo.apk", "timestamp": "2025-12-27T18:45:05.351496"} {"timestamp":"2025-12-27T18:45:05.360Z"}
+info: Received scan request: de653dd6-dde9-48d3-93fb-7a863e1f0a2c {"timestamp":"2025-12-27T18:45:05.360Z"}
+info: Polling scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c attempt 1/12. Found: APK=true Net=false Sec=true Cry=true {"timestamp":"2025-12-27T18:45:05.406Z"}
+info: Polling scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c attempt 2/12. Found: APK=true Net=true Sec=true Cry=true {"timestamp":"2025-12-27T18:45:15.450Z"}
+info: Generating Report for de653dd6-dde9-48d3-93fb-7a863e1f0a2c {"timestamp":"2025-12-27T18:45:15.450Z"}
+info: Ô£à JSON Report Generated and Saved via Kafka Trigger: 1332b6ec-70d4-41a7-9a9c-5a9bbeceaf2f {"timestamp":"2025-12-27T18:45:15.553Z"}
+info: Published report-generated event for 1332b6ec-70d4-41a7-9a9c-5a9bbeceaf2f to report-generated {"timestamp":"2025-12-27T18:45:15.557Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"e9e25a26-5c97-4443-bafb-752db26f4a6c","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T18:47:37.895Z"}
+info: Constructed report, services keys {"reportId":"e9e25a26-5c97-4443-bafb-752db26f4a6c","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:47:37.904Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:47:37.909Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-e9e25a26-5c97-4443-bafb-752db26f4a6c.html","out":"/app/tmp/report-e9e25a26-5c97-4443-bafb-752db26f4a6c.pdf","timestamp":"2025-12-27T18:47:37.976Z"}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-e9e25a26-5c97-4443-bafb-752db26f4a6c.pdf","timestamp":"2025-12-27T18:47:41.433Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"e9e25a26-5c97-4443-bafb-752db26f4a6c","timestamp":"2025-12-27T18:47:41.436Z"}
+{"level":"WARN","timestamp":"2025-
+12-27T18:47:43.259Z","logger":"kaf
+kajs","message":"KafkaJS v2.0.0 
+switched default partitioner. To 
+retain the same partitioning 
+behavior as in previous versions, 
+create the producer with the 
+option \"createPartitioner: 
+Partitioners.LegacyPartitioner\". 
+See the migration guide at https:/
+/kafka.js.org/docs/migration-guide
+-v2.0.0#producer-new-default-parti
+tioner for details. Silence this 
+warning by setting the 
+environment variable \"KAFKAJS_NO_
+PARTITIONER_WARNING=1\""}
+info: Report generation completed {"duration":4,"format":"pdf","reportId":"e9e25a26-5c97-4443-bafb-752db26f4a6c","timestamp":"2025-12-27T18:47:41.437Z","vulnerabilities":3281}
+info: ReportGen: Connecting to Kafka... {"timestamp":"2025-12-27T18:47:43.297Z"}
+info: ReportGen: Kafka producer connected {"timestamp":"2025-12-27T18:47:43.308Z"}
+info: ReportGen: Connected. Subscribing... {"timestamp":"2025-12-27T18:47:43.311Z"}
+info: ReportGen: Subscribed to scan-requests {"timestamp":"2025-12-27T18:47:43.318Z"}
+info: ReportGen: Subscribed to scan-results {"timestamp":"2025-12-27T18:47:43.319Z"}
+{"level":"INFO","timestamp":"2025-12-27T18:47:43.320Z","logger":"kafkajs","message":"[Consumer] Starting","groupId":"reportgen-group"}
+{"level":"INFO","timestamp":"2025-12-27T18:48:10.736Z","logger":"kafkajs","message":"[ConsumerGroup] Consumer has joined the group","groupId":"reportgen-group","memberId":"reportgen-service-463e2f8d-4f15-4ea4-a341-28ae0cffedda","leaderId":"reportgen-service-463e2f8d-4f15-4ea4-a341-28ae0cffedda","isLeader":true,"memberAssignment":{"scan-requests":[0],"scan-results":[0]},"groupProtocol":"RoundRobinAssigner","duration":27416}
+info: ReportGen listening on port 3005 {"timestamp":"2025-12-27T18:48:10.742Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"609ca31a-4c7f-4001-aeb0-46ec58634935","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T18:50:01.740Z"}
+info: Constructed report, services keys {"reportId":"609ca31a-4c7f-4001-aeb0-46ec58634935","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:50:01.762Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:50:01.782Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-609ca31a-4c7f-4001-aeb0-46ec58634935.html","out":"/app/tmp/report-609ca31a-4c7f-4001-aeb0-46ec58634935.pdf","timestamp":"2025-12-27T18:50:01.978Z"}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-609ca31a-4c7f-4001-aeb0-46ec58634935.pdf","timestamp":"2025-12-27T18:50:16.855Z"}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+{"level":"WARN","timestamp":"2025-
+12-27T18:53:27.967Z","logger":"kaf
+kajs","message":"KafkaJS v2.0.0 
+switched default partitioner. To 
+retain the same partitioning 
+behavior as in previous versions, 
+create the producer with the 
+option \"createPartitioner: 
+Partitioners.LegacyPartitioner\". 
+See the migration guide at https:/
+/kafka.js.org/docs/migration-guide
+-v2.0.0#producer-new-default-parti
+tioner for details. Silence this 
+warning by setting the 
+environment variable \"KAFKAJS_NO_
+PARTITIONER_WARNING=1\""}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"609ca31a-4c7f-4001-aeb0-46ec58634935","timestamp":"2025-12-27T18:50:16.869Z"}
+info: Report generation completed {"duration":15,"format":"pdf","reportId":"609ca31a-4c7f-4001-aeb0-46ec58634935","timestamp":"2025-12-27T18:50:16.872Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"609ca31a-4c7f-4001-aeb0-46ec58634935","timestamp":"2025-12-27T18:50:18.285Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"4d70ac39-de31-48bd-90de-a09749821040","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T18:50:39.325Z"}
+info: Constructed report, services keys {"reportId":"4d70ac39-de31-48bd-90de-a09749821040","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:50:39.343Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:50:39.350Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-4d70ac39-de31-48bd-90de-a09749821040.html","out":"/app/tmp/report-4d70ac39-de31-48bd-90de-a09749821040.pdf","timestamp":"2025-12-27T18:50:39.472Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"b479a919-ebb8-4fab-ad77-15f85c5bdc8e","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T18:50:42.333Z"}
+info: Constructed report, services keys {"reportId":"b479a919-ebb8-4fab-ad77-15f85c5bdc8e","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:50:42.359Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:50:42.369Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-b479a919-ebb8-4fab-ad77-15f85c5bdc8e.html","out":"/app/tmp/report-b479a919-ebb8-4fab-ad77-15f85c5bdc8e.pdf","timestamp":"2025-12-27T18:50:42.547Z"}
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-4d70ac39-de31-48bd-90de-a09749821040.pdf","timestamp":"2025-12-27T18:50:54.895Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"4d70ac39-de31-48bd-90de-a09749821040","timestamp":"2025-12-27T18:50:54.916Z"}
+info: Report generation completed {"duration":16,"format":"pdf","reportId":"4d70ac39-de31-48bd-90de-a09749821040","timestamp":"2025-12-27T18:50:54.917Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"4d70ac39-de31-48bd-90de-a09749821040","timestamp":"2025-12-27T18:50:55.505Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-b479a919-ebb8-4fab-ad77-15f85c5bdc8e.pdf","timestamp":"2025-12-27T18:50:59.141Z"}
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+{"level":"WARN","timestamp":"2025-
+12-27T18:55:48.571Z","logger":"kaf
+kajs","message":"KafkaJS v2.0.0 
+switched default partitioner. To 
+retain the same partitioning 
+behavior as in previous versions, 
+create the producer with the 
+option \"createPartitioner: 
+Partitioners.LegacyPartitioner\". 
+See the migration guide at https:/
+/kafka.js.org/docs/migration-guide
+-v2.0.0#producer-new-default-parti
+tioner for details. Silence this 
+warning by setting the 
+environment variable \"KAFKAJS_NO_
+PARTITIONER_WARNING=1\""}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"b479a919-ebb8-4fab-ad77-15f85c5bdc8e","timestamp":"2025-12-27T18:50:59.146Z"}
+info: Report generation completed {"duration":17,"format":"pdf","reportId":"b479a919-ebb8-4fab-ad77-15f85c5bdc8e","timestamp":"2025-12-27T18:50:59.146Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"b479a919-ebb8-4fab-ad77-15f85c5bdc8e","timestamp":"2025-12-27T18:51:00.134Z"}
+info: ReportGen: Connecting to Kafka... {"timestamp":"2025-12-27T18:53:28.003Z"}
+info: ReportGen: Kafka producer connected {"timestamp":"2025-12-27T18:53:28.013Z"}
+info: ReportGen: Connected. Subscribing... {"timestamp":"2025-12-27T18:53:28.017Z"}
+info: ReportGen: Subscribed to scan-requests {"timestamp":"2025-12-27T18:53:28.021Z"}
+info: ReportGen: Subscribed to scan-results {"timestamp":"2025-12-27T18:53:28.023Z"}
+{"level":"INFO","timestamp":"2025-12-27T18:53:28.023Z","logger":"kafkajs","message":"[Consumer] Starting","groupId":"reportgen-group"}
+{"level":"INFO","timestamp":"2025-12-27T18:53:51.388Z","logger":"kafkajs","message":"[ConsumerGroup] Consumer has joined the group","groupId":"reportgen-group","memberId":"reportgen-service-4771739e-b00f-493f-b878-9a62e730a833","leaderId":"reportgen-service-4771739e-b00f-493f-b878-9a62e730a833","isLeader":true,"memberAssignment":{"scan-requests":[0],"scan-results":[0]},"groupProtocol":"RoundRobinAssigner","duration":23364}
+info: ReportGen listening on port 3005 {"timestamp":"2025-12-27T18:53:51.392Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"ce01afd6-1505-4553-b1b9-79104dc0db6e","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T18:54:09.899Z"}
+info: Constructed report, services keys {"reportId":"ce01afd6-1505-4553-b1b9-79104dc0db6e","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:54:09.907Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:54:09.917Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-ce01afd6-1505-4553-b1b9-79104dc0db6e.html","out":"/app/tmp/report-ce01afd6-1505-4553-b1b9-79104dc0db6e.pdf","timestamp":"2025-12-27T18:54:09.954Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-ce01afd6-1505-4553-b1b9-79104dc0db6e.pdf","timestamp":"2025-12-27T18:54:12.755Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"ce01afd6-1505-4553-b1b9-79104dc0db6e","timestamp":"2025-12-27T18:54:12.758Z"}
+info: Report generation completed {"duration":3,"format":"pdf","reportId":"ce01afd6-1505-4553-b1b9-79104dc0db6e","timestamp":"2025-12-27T18:54:12.758Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"ce01afd6-1505-4553-b1b9-79104dc0db6e","timestamp":"2025-12-27T18:54:14.049Z"}
+info: ReportGen: Connecting to Kafka... {"timestamp":"2025-12-27T18:55:48.616Z"}
+info: ReportGen: Kafka producer connected {"timestamp":"2025-12-27T18:55:48.629Z"}
+info: ReportGen: Connected. Subscribing... {"timestamp":"2025-12-27T18:55:48.632Z"}
+info: ReportGen: Subscribed to scan-requests {"timestamp":"2025-12-27T18:55:48.636Z"}
+info: ReportGen: Subscribed to scan-results {"timestamp":"2025-12-27T18:55:48.638Z"}
+{"level":"INFO","timestamp":"2025-12-27T18:55:48.638Z","logger":"kafkajs","message":"[Consumer] Starting","groupId":"reportgen-group"}
+{"level":"INFO","timestamp":"2025-12-27T18:56:13.232Z","logger":"kafkajs","message":"[ConsumerGroup] Consumer has joined the group","groupId":"reportgen-group","memberId":"reportgen-service-9e90320e-627d-44b3-957d-41fe248c9f24","leaderId":"reportgen-service-9e90320e-627d-44b3-957d-41fe248c9f24","isLeader":true,"memberAssignment":{"scan-requests":[0],"scan-results":[0]},"groupProtocol":"RoundRobinAssigner","duration":24593}
+info: ReportGen listening on port 3005 {"timestamp":"2025-12-27T18:56:13.236Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"a4c3d337-fe62-40bd-a850-cbda48aca731","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T18:58:06.248Z"}
+info: Constructed report, services keys {"reportId":"a4c3d337-fe62-40bd-a850-cbda48aca731","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:58:06.261Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:58:06.270Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-a4c3d337-fe62-40bd-a850-cbda48aca731.html","out":"/app/tmp/report-a4c3d337-fe62-40bd-a850-cbda48aca731.pdf","timestamp":"2025-12-27T18:58:06.316Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-a4c3d337-fe62-40bd-a850-cbda48aca731.pdf","timestamp":"2025-12-27T18:58:10.362Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"a4c3d337-fe62-40bd-a850-cbda48aca731","timestamp":"2025-12-27T18:58:10.366Z"}
+info: Report generation completed {"duration":4,"format":"pdf","reportId":"a4c3d337-fe62-40bd-a850-cbda48aca731","timestamp":"2025-12-27T18:58:10.366Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"a4c3d337-fe62-40bd-a850-cbda48aca731","timestamp":"2025-12-27T18:58:10.403Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"e2a25355-b432-4e41-b3db-b61837e8a3ab","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T18:58:31.168Z"}
+info: Constructed report, services keys {"reportId":"e2a25355-b432-4e41-b3db-b61837e8a3ab","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T18:58:31.172Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T18:58:31.175Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-e2a25355-b432-4e41-b3db-b61837e8a3ab.html","out":"/app/tmp/report-e2a25355-b432-4e41-b3db-b61837e8a3ab.pdf","timestamp":"2025-12-27T18:58:31.223Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-e2a25355-b432-4e41-b3db-b61837e8a3ab.pdf","timestamp":"2025-12-27T18:58:35.203Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"e2a25355-b432-4e41-b3db-b61837e8a3ab","timestamp":"2025-12-27T18:58:35.206Z"}
+info: Report generation completed {"duration":4,"format":"pdf","reportId":"e2a25355-b432-4e41-b3db-b61837e8a3ab","timestamp":"2025-12-27T18:58:35.207Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"e2a25355-b432-4e41-b3db-b61837e8a3ab","timestamp":"2025-12-27T18:58:35.320Z"}
+info: ReportGen: Connecting to Kafka... {"timestamp":"2025-12-27T19:00:09.979Z"}
+info: ReportGen: Kafka producer connected {"timestamp":"2025-12-27T19:00:09.987Z"}
+info: ReportGen: Connected. Subscribing... {"timestamp":"2025-12-27T19:00:09.989Z"}
+info: ReportGen: Subscribed to scan-requests {"timestamp":"2025-12-27T19:00:09.993Z"}
+info: ReportGen: Subscribed to scan-results {"timestamp":"2025-12-27T19:00:09.995Z"}
+{"level":"INFO","timestamp":"2025-12-27T19:00:09.995Z","logger":"kafkajs","message":"[Consumer] Starting","groupId":"reportgen-group"}
+{"level":"INFO","timestamp":"2025-12-27T19:00:35.956Z","logger":"kafkajs","message":"[ConsumerGroup] Consumer has joined the group","groupId":"reportgen-group","memberId":"reportgen-service-9a29b7c7-f405-4b14-baad-43935efd25e5","leaderId":"reportgen-service-9a29b7c7-f405-4b14-baad-43935efd25e5","isLeader":true,"memberAssignment":{"scan-requests":[0],"scan-results":[0]},"groupProtocol":"RoundRobinAssigner","duration":25959}
+info: ReportGen listening on port 3005 {"timestamp":"2025-12-27T19:00:35.964Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"b3f0396b-6de2-4055-855a-526cf67e6a5b","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T19:00:45.975Z"}
+info: Constructed report, services keys {"reportId":"b3f0396b-6de2-4055-855a-526cf67e6a5b","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T19:00:46.004Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T19:00:46.021Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-b3f0396b-6de2-4055-855a-526cf67e6a5b.html","out":"/app/tmp/report-b3f0396b-6de2-4055-855a-526cf67e6a5b.pdf","timestamp":"2025-12-27T19:00:46.059Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-b3f0396b-6de2-4055-855a-526cf67e6a5b.pdf","timestamp":"2025-12-27T19:00:49.074Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"b3f0396b-6de2-4055-855a-526cf67e6a5b","timestamp":"2025-12-27T19:00:49.078Z"}
+info: Report generation completed {"duration":3,"format":"pdf","reportId":"b3f0396b-6de2-4055-855a-526cf67e6a5b","timestamp":"2025-12-27T19:00:49.078Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"b3f0396b-6de2-4055-855a-526cf67e6a5b","timestamp":"2025-12-27T19:00:50.128Z"}
+info: ReportGen: Connecting to Kafka... {"timestamp":"2025-12-27T21:32:02.772Z"}
+info: ReportGen: Kafka producer connected {"timestamp":"2025-12-27T21:32:02.781Z"}
+info: ReportGen: Connected. Subscribing... {"timestamp":"2025-12-27T21:32:02.783Z"}
+info: ReportGen: Subscribed to scan-requests {"timestamp":"2025-12-27T21:32:02.787Z"}
+info: ReportGen: Subscribed to scan-results {"timestamp":"2025-12-27T21:32:02.788Z"}
+{"level":"INFO","timestamp":"2025-12-27T21:32:02.788Z","logger":"kafkajs","message":"[Consumer] Starting","groupId":"reportgen-group"}
+{"level":"INFO","timestamp":"2025-12-27T21:32:28.988Z","logger":"kafkajs","message":"[ConsumerGroup] Consumer has joined the group","groupId":"reportgen-group","memberId":"reportgen-service-e971ca22-c542-4dc9-97a2-bc85101f9355","leaderId":"reportgen-service-e971ca22-c542-4dc9-97a2-bc85101f9355","isLeader":true,"memberAssignment":{"scan-requests":[0],"scan-results":[0]},"groupProtocol":"RoundRobinAssigner","duration":26199}
+info: ReportGen listening on port 3005 {"timestamp":"2025-12-27T21:32:29.002Z"}
+info: [DEBUG generateFromScan] MongoDB scanData keys: {"cryptoCount":165,"hasApk":true,"hasCrypto":true,"hasNetwork":true,"hasSecrets":true,"keys":["apk","secrets","crypto","network","scan"],"networkCount":2114,"secretsCount":1000,"timestamp":"2025-12-27T21:32:39.227Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"92f4e491-c854-4f47-a5b8-b7c94d7a9c28","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T21:32:39.235Z"}
+info: Constructed report, services keys {"reportId":"92f4e491-c854-4f47-a5b8-b7c94d7a9c28","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T21:32:39.264Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T21:32:39.290Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-92f4e491-c854-4f47-a5b8-b7c94d7a9c28.html","out":"/app/tmp/report-92f4e491-c854-4f47-a5b8-b7c94d7a9c28.pdf","timestamp":"2025-12-27T21:32:39.414Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-92f4e491-c854-4f47-a5b8-b7c94d7a9c28.pdf","timestamp":"2025-12-27T21:32:45.864Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"92f4e491-c854-4f47-a5b8-b7c94d7a9c28","timestamp":"2025-12-27T21:32:45.876Z"}
+info: Report generation completed {"duration":7,"format":"pdf","reportId":"92f4e491-c854-4f47-a5b8-b7c94d7a9c28","timestamp":"2025-12-27T21:32:45.878Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"92f4e491-c854-4f47-a5b8-b7c94d7a9c28","timestamp":"2025-12-27T21:32:47.031Z"}
+info: [DEBUG generateFromScan] MongoDB scanData keys: {"cryptoCount":165,"hasApk":true,"hasCrypto":true,"hasNetwork":true,"hasSecrets":true,"keys":["apk","secrets","crypto","network","scan"],"networkCount":2114,"secretsCount":1000,"timestamp":"2025-12-27T21:33:14.417Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"722f0a3d-b3cc-4c7b-84fd-7646f7d1acae","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T21:33:14.420Z"}
+info: Constructed report, services keys {"reportId":"722f0a3d-b3cc-4c7b-84fd-7646f7d1acae","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T21:33:14.439Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T21:33:14.445Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-722f0a3d-b3cc-4c7b-84fd-7646f7d1acae.html","out":"/app/tmp/report-722f0a3d-b3cc-4c7b-84fd-7646f7d1acae.pdf","timestamp":"2025-12-27T21:33:14.538Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-722f0a3d-b3cc-4c7b-84fd-7646f7d1acae.pdf","timestamp":"2025-12-27T21:33:21.900Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"722f0a3d-b3cc-4c7b-84fd-7646f7d1acae","timestamp":"2025-12-27T21:33:21.910Z"}
+info: Report generation completed {"duration":7,"format":"pdf","reportId":"722f0a3d-b3cc-4c7b-84fd-7646f7d1acae","timestamp":"2025-12-27T21:33:21.918Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"722f0a3d-b3cc-4c7b-84fd-7646f7d1acae","timestamp":"2025-12-27T21:33:22.523Z"}
+info: [DEBUG generateFromScan] MongoDB scanData keys: {"cryptoCount":165,"hasApk":true,"hasCrypto":true,"hasNetwork":true,"hasSecrets":true,"keys":["apk","secrets","crypto","network","scan"],"networkCount":2114,"secretsCount":1000,"timestamp":"2025-12-27T21:34:36.361Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"6229d671-fef0-4816-bfd5-ee87c2e26260","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T21:34:36.362Z"}
+info: Constructed report, services keys {"reportId":"6229d671-fef0-4816-bfd5-ee87c2e26260","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T21:34:36.369Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T21:34:36.372Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-6229d671-fef0-4816-bfd5-ee87c2e26260.html","out":"/app/tmp/report-6229d671-fef0-4816-bfd5-ee87c2e26260.pdf","timestamp":"2025-12-27T21:34:36.406Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-6229d671-fef0-4816-bfd5-ee87c2e26260.pdf","timestamp":"2025-12-27T21:34:39.203Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"6229d671-fef0-4816-bfd5-ee87c2e26260","timestamp":"2025-12-27T21:34:39.206Z"}
+info: Report generation completed {"duration":3,"format":"pdf","reportId":"6229d671-fef0-4816-bfd5-ee87c2e26260","timestamp":"2025-12-27T21:34:39.207Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"6229d671-fef0-4816-bfd5-ee87c2e26260","timestamp":"2025-12-27T21:34:40.192Z"}
+info: [DEBUG generateFromScan] MongoDB scanData keys: {"cryptoCount":165,"hasApk":true,"hasCrypto":true,"hasNetwork":true,"hasSecrets":true,"keys":["apk","secrets","crypto","network","scan"],"networkCount":2114,"secretsCount":1000,"timestamp":"2025-12-27T21:34:50.202Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"9a8d71f7-e0bc-4719-bbc4-b8a0c60801ef","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T21:34:50.209Z"}
+info: Constructed report, services keys {"reportId":"9a8d71f7-e0bc-4719-bbc4-b8a0c60801ef","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T21:34:50.228Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T21:34:50.237Z"}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-9a8d71f7-e0bc-4719-bbc4-b8a0c60801ef.html","out":"/app/tmp/report-9a8d71f7-e0bc-4719-bbc4-b8a0c60801ef.pdf","timestamp":"2025-12-27T21:34:50.277Z"}
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-9a8d71f7-e0bc-4719-bbc4-b8a0c60801ef.pdf","timestamp":"2025-12-27T21:34:53.386Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"9a8d71f7-e0bc-4719-bbc4-b8a0c60801ef","timestamp":"2025-12-27T21:34:53.389Z"}
+info: Report generation completed {"duration":3,"format":"pdf","reportId":"9a8d71f7-e0bc-4719-bbc4-b8a0c60801ef","timestamp":"2025-12-27T21:34:53.389Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"9a8d71f7-e0bc-4719-bbc4-b8a0c60801ef","timestamp":"2025-12-27T21:34:54.287Z"}
+info: ReportGen: Connecting to Kafka... {"timestamp":"2025-12-27T21:38:30.205Z"}
+info: ReportGen: Kafka producer connected {"timestamp":"2025-12-27T21:38:30.213Z"}
+info: ReportGen: Connected. Subscribing... {"timestamp":"2025-12-27T21:38:30.216Z"}
+info: ReportGen: Subscribed to scan-requests {"timestamp":"2025-12-27T21:38:30.219Z"}
+info: ReportGen: Subscribed to scan-results {"timestamp":"2025-12-27T21:38:30.221Z"}
+{"level":"INFO","timestamp":"2025-12-27T21:38:30.222Z","logger":"kafkajs","message":"[Consumer] Starting","groupId":"reportgen-group"}
+{"level":"INFO","timestamp":"2025-12-27T21:38:56.270Z","logger":"kafkajs","message":"[ConsumerGroup] Consumer has joined the group","groupId":"reportgen-group","memberId":"reportgen-service-c136cc01-fa12-434d-9474-10243afc2b0b","leaderId":"reportgen-service-c136cc01-fa12-434d-9474-10243afc2b0b","isLeader":true,"memberAssignment":{"scan-requests":[0],"scan-results":[0]},"groupProtocol":"RoundRobinAssigner","duration":26047}
+info: ReportGen listening on port 3005 {"timestamp":"2025-12-27T21:38:56.296Z"}
+info: [DEBUG generateFromScan] MongoDB scanData keys: {"cryptoCount":165,"hasApk":true,"hasCrypto":true,"hasNetwork":true,"hasSecrets":true,"keys":["apk","secrets","crypto","network","scan"],"networkCount":2114,"secretsCount":1000,"timestamp":"2025-12-27T21:39:15.464Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"d7dbe7b7-60c1-4d8b-850a-4d0793c50fb8","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T21:39:15.507Z"}
+info: [DEBUG generateFromScan] Transformed scanResults: {"apkScannerCount":2,"cryptoCheckCount":165,"keys":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"networkInspectorCount":2114,"secretHunterCount":1000,"timestamp":"2025-12-27T21:39:15.511Z"}
+info: Constructed report, services keys {"reportId":"d7dbe7b7-60c1-4d8b-850a-4d0793c50fb8","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T21:39:15.534Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T21:39:15.558Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-d7dbe7b7-60c1-4d8b-850a-4d0793c50fb8.html","out":"/app/tmp/report-d7dbe7b7-60c1-4d8b-850a-4d0793c50fb8.pdf","timestamp":"2025-12-27T21:39:15.691Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-d7dbe7b7-60c1-4d8b-850a-4d0793c50fb8.pdf","timestamp":"2025-12-27T21:39:25.305Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"d7dbe7b7-60c1-4d8b-850a-4d0793c50fb8","timestamp":"2025-12-27T21:39:25.324Z"}
+info: Report generation completed {"duration":10,"format":"pdf","reportId":"d7dbe7b7-60c1-4d8b-850a-4d0793c50fb8","timestamp":"2025-12-27T21:39:25.324Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"d7dbe7b7-60c1-4d8b-850a-4d0793c50fb8","timestamp":"2025-12-27T21:39:25.755Z"}
+info: [DEBUG generateFromScan] MongoDB scanData keys: {"cryptoCount":165,"hasApk":true,"hasCrypto":true,"hasNetwork":true,"hasSecrets":true,"keys":["apk","secrets","crypto","network","scan"],"networkCount":2114,"secretsCount":1000,"timestamp":"2025-12-27T21:40:09.726Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"7d040bb1-00ad-4892-bbae-ee0999630977","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T21:40:09.728Z"}
+info: [DEBUG generateFromScan] Transformed scanResults: {"apkScannerCount":2,"cryptoCheckCount":165,"keys":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"networkInspectorCount":2114,"secretHunterCount":1000,"timestamp":"2025-12-27T21:40:09.728Z"}
+info: Constructed report, services keys {"reportId":"7d040bb1-00ad-4892-bbae-ee0999630977","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T21:40:09.732Z"}
+info: Using template and css {"cssPath":"/app/src/templates/assets/css/security_report.css","servicesCount":4,"templatePath":"/app/src/templates/security_report.html","timestamp":"2025-12-27T21:40:09.734Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-7d040bb1-00ad-4892-bbae-ee0999630977.html","out":"/app/tmp/report-7d040bb1-00ad-4892-bbae-ee0999630977.pdf","timestamp":"2025-12-27T21:40:09.755Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-7d040bb1-00ad-4892-bbae-ee0999630977.pdf","timestamp":"2025-12-27T21:40:12.817Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"7d040bb1-00ad-4892-bbae-ee0999630977","timestamp":"2025-12-27T21:40:12.820Z"}
+info: Report generation completed {"duration":3,"format":"pdf","reportId":"7d040bb1-00ad-4892-bbae-ee0999630977","timestamp":"2025-12-27T21:40:12.820Z","vulnerabilities":3281}
+info: Report downloaded {"format":"pdf","reportId":"7d040bb1-00ad-4892-bbae-ee0999630977","timestamp":"2025-12-27T21:40:13.730Z"}
+info: Starting report generation from MongoDB {"format":"pdf","projectName":"Scan de653dd6-dde9-48d3-93fb-7a863e1f0a2c","reportId":"eb39f63a-342a-4351-a741-3a91cf4efd70","resultsFound":{"apk":true,"crypto":true,"network":true,"secrets":true},"scanId":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c","timestamp":"2025-12-27T21:43:04.610Z"}
+info: [DEBUG generateFromScan] Transformed scanResults: {"apkScannerCount":2,"cryptoCheckCount":165,"keys":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"networkInspectorCount":2114,"secretHunterCount":1000,"timestamp":"2025-12-27T21:43:04.610Z"}
+info: Constructed report, services keys {"reportId":"eb39f63a-342a-4351-a741-3a91cf4efd70","services":["cryptoCheck","secretHunter","networkInspector","apkScanner"],"timestamp":"2025-12-27T21:43:04.618Z"}
+info: Rendering PDF via Puppeteer {"htmlPath":"/app/tmp/report-eb39f63a-342a-4351-a741-3a91cf4efd70.html","out":"/app/tmp/report-eb39f63a-342a-4351-a741-3a91cf4efd70.pdf","timestamp":"2025-12-27T21:43:04.653Z"}
+info: Wrote PDF via Puppeteer {"out":"/app/tmp/report-eb39f63a-342a-4351-a741-3a91cf4efd70.pdf","timestamp":"2025-12-27T21:43:07.007Z"}
+warn: Failed to save report to MongoDB {"error":{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: security_platform.reports index: scan_id_1 dup key: { scan_id: \"de653dd6-dde9-48d3-93fb-7a863e1f0a2c\" }","index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"index":0,"keyPattern":{"scan_id":1},"keyValue":{"scan_id":"de653dd6-dde9-48d3-93fb-7a863e1f0a2c"}},"reportId":"eb39f63a-342a-4351-a741-3a91cf4efd70","timestamp":"2025-12-27T21:43:07.009Z"}
+info: Report generation completed {"duration":2,"format":"pdf","reportId":"eb39f63a-342a-4351-a741-3a91cf4efd70","timestamp":"2025-12-27T21:43:07.009Z","vulnerabilities":3281}
+info: ReportGen: Connecting to Kafka... {"timestamp":"2025-12-27T21:44:36.877Z"}
+info: ReportGen: Kafka producer connected {"timestamp":"2025-12-27T21:44:36.884Z"}
+info: ReportGen: Connected. Subscribing... {"timestamp":"2025-12-27T21:44:36.887Z"}
+info: ReportGen: Subscribed to scan-requests {"timestamp":"2025-12-27T21:44:36.890Z"}
+info: ReportGen: Subscribed to scan-results {"timestamp":"2025-12-27T21:44:36.892Z"}
+{"level":"INFO","timestamp":"2025-12-27T21:44:36.892Z","logger":"kafkajs","message":"[Consumer] Starting","groupId":"reportgen-group"}
+{"level":"INFO","timestamp":"2025-12-27T21:45:03.483Z","logger":"kafkajs","message":"[ConsumerGroup] Consumer has joined the group","groupId":"reportgen-group","memberId":"reportgen-service-aab361ac-bea4-4f28-964e-47f720fc033f","leaderId":"reportgen-service-aab361ac-bea4-4f28-964e-47f720fc033f","isLeader":true,"memberAssignment":{"scan-requests":[0],"scan-results":[0]},"groupProtocol":"RoundRobinAssigner","duration":26590}
+info: ReportGen listening on port 3005 {"timestamp":"2025-12-27T21:45:03.503Z"}
+{"level":"WARN","timestamp":"2025-
+12-27T19:00:09.940Z","logger":"kaf
+kajs","message":"KafkaJS v2.0.0 
+switched default partitioner. To 
+retain the same partitioning 
+behavior as in previous versions, 
+create the producer with the 
+option \"createPartitioner: 
+Partitioners.LegacyPartitioner\". 
+See the migration guide at https:/
+/kafka.js.org/docs/migration-guide
+-v2.0.0#producer-new-default-parti
+tioner for details. Silence this 
+warning by setting the 
+environment variable \"KAFKAJS_NO_
+PARTITIONER_WARNING=1\""}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+{"level":"WARN","timestamp":"2025-
+12-27T20:30:33.296Z","logger":"kaf
+kajs","message":"[RequestQueue] 
+Response without match","clientId"
+:"reportgen-service","broker":"kaf
+ka:9092","correlationId":11}
+{"level":"WARN","timestamp":"2025-
+12-27T21:27:05.845Z","logger":"kaf
+kajs","message":"[RequestQueue] 
+Response without match","clientId"
+:"reportgen-service","broker":"kaf
+ka:9092","correlationId":382}
+{"level":"WARN","timestamp":"2025-
+12-27T21:32:02.739Z","logger":"kaf
+kajs","message":"KafkaJS v2.0.0 
+switched default partitioner. To 
+retain the same partitioning 
+behavior as in previous versions, 
+create the producer with the 
+option \"createPartitioner: 
+Partitioners.LegacyPartitioner\". 
+See the migration guide at https:/
+/kafka.js.org/docs/migration-guide
+-v2.0.0#producer-new-default-parti
+tioner for details. Silence this 
+warning by setting the 
+environment variable \"KAFKAJS_NO_
+PARTITIONER_WARNING=1\""}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+{"level":"WARN","timestamp":"2025-
+12-27T21:38:30.171Z","logger":"kaf
+kajs","message":"KafkaJS v2.0.0 
+switched default partitioner. To 
+retain the same partitioning 
+behavior as in previous versions, 
+create the producer with the 
+option \"createPartitioner: 
+Partitioners.LegacyPartitioner\". 
+See the migration guide at https:/
+/kafka.js.org/docs/migration-guide
+-v2.0.0#producer-new-default-parti
+tioner for details. Silence this 
+warning by setting the 
+environment variable \"KAFKAJS_NO_
+PARTITIONER_WARNING=1\""}
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+[1m[43m[30m
+  Puppeteer old Headless 
+deprecation warning:[0m[33m
+    In the near future `headless: 
+true` will default to the new 
+Headless mode
+    for Chrome instead of the old 
+Headless implementation. For more
+    information, please see https:
+//developer.chrome.com/articles/ne
+w-headless/.
+    Consider opting in early by 
+passing `headless: "new"` to 
+`puppeteer.launch()`
+    If you encounter any bugs, 
+please report them to https://gith
+ub.com/puppeteer/puppeteer/issues/
+new/choose.[0m
+
+{"level":"WARN","timestamp":"2025-
+12-27T21:44:36.844Z","logger":"kaf
+kajs","message":"KafkaJS v2.0.0 
+switched default partitioner. To 
+retain the same partitioning 
+behavior as in previous versions, 
+create the producer with the 
+option \"createPartitioner: 
+Partitioners.LegacyPartitioner\". 
+See the migration guide at https:/
+/kafka.js.org/docs/migration-guide
+-v2.0.0#producer-new-default-parti
+tioner for details. Silence this 
+warning by setting the 
+environment variable \"KAFKAJS_NO_
+PARTITIONER_WARNING=1\""}

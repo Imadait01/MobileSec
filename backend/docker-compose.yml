@@ -343,8 +343,8 @@ services:
       - HOST=0.0.0.0
       - PORT=8000
       - DEBUG=false
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
-      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-amazon/nova-lite-v1}
+      - OPENROUTER_API_KEY=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
+      - OPENROUTER_MODEL=meta-llama/llama-3.2-3b-instruct:free
       - OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
       - RULES_PATH=/app/rules/masvs
     volumes:

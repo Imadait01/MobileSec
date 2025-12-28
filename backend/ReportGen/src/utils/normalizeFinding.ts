@@ -34,7 +34,7 @@ export function normalizeFinding(raw: any, serviceName?: string) {
     return undefined;
   };
 
-  const title = pick(raw, ['title', 'ruleId', 'rule_id', 'id', 'name', 'vulnerability', 'type', 'issue', 'rule', 'ruleName', 'rule_name', 'signature', 'message']) ||
+  const title = pick(raw, ['title', 'vulnerability', 'message', 'type', 'name', 'ruleId', 'rule_id', 'id', 'issue', 'rule', 'ruleName', 'rule_name', 'signature']) ||
     // if there is a nested object with identifier-like fields, stringify a small sample
     (raw && raw.match ? (typeof raw.match === 'string' ? raw.match : JSON.stringify(raw.match).slice(0, 120)) : undefined) ||
     (serviceName ? `${serviceName} finding` : 'Finding');

@@ -360,3 +360,82 @@ async def get_cached_suggestions(scan_id: str):
         "generated_at": existing.get("generated_at"),
         "model_used": existing.get("model_used")
     }
+
+
+# ============================================================================
+# ML PRIORITIZED SUGGESTIONS - New Endpoint with LightGBM + Amazon Bedrock
+# ============================================================================
+
+@router.post(
+    "/ml-priority",
+    response_model=SuggestResponse,
+    summary="Générer des suggestions avec priorité ML (LightGBM + Amazon Bedrock)",
+    description="""
+    Génère des suggestions en utilisant:
+    1. LightGBM pour prioriser les vulnérabilités par score de confiance
+    2. Amazon Bedrock (Nova 2 Lite) pour générer des suggestions détaillées pour le top 10
+    
+    Cette approche optimise les coûts API en ne générant des suggestions IA que pour
+    les vulnérabilités les plus critiques identifiées par le modèle ML.
+    """
+)
+async def generate_ml_prioritized_suggestions(
+    request: SuggestRequest,
+    max_suggestions: int = Query(10, ge=1, le=50, description="Nombre max de suggestions à générer"),
+    generator: SuggestionGenerator = Depends(get_suggestion_generator)
+) -> SuggestResponse:
+    """
+    Génère des suggestions avec priorité ML.
+    
+    Args:
+        request: Liste des vulnérabilités avec scan_id
+        max_suggestions: Nombre maximum de suggestions à générer (défaut: 10)
+        generator: Service de génération de suggestions
+        
+    Returns:
+        SuggestResponse avec suggestions triées par priorité LightGBM
+    """
+    try:
+        if not request.vulnerabilities:
+            raise HTTPException(
+                status_code=400,
+                detail="La liste des vulnérabilités ne peut pas être vide"
+            )
+        
+        if not request.scan_id:
+            raise HTTPException(
+                status_code=400,
+                detail="scan_id est requis pour la priorisation ML"
+            )
+        
+        logger.info(f"[ML Priority] Traitement de {len(request.vulnerabilities)} vulnérabilités pour scan {request.scan_id}")
+        logger.info(f"[ML Priority] Génération de suggestions pour le top {max_suggestions}")
+        
+        # Call the new ML-prioritized method
+        suggestions = await generator.generate_suggestions_with_ml_priority(
+            scan_id=request.scan_id,
+            vulnerabilities=request.vulnerabilities,
+            language=request.language or "java",
+            include_patches=request.include_patches,
+            max_suggestions=max_suggestions
+        )
+        
+        logger.info(f"[ML Priority] Généré {len(suggestions)} suggestions avec priorité ML")
+        
+        return SuggestResponse(
+            status="success",
+            scan_id=request.scan_id,
+            total_processed=len(request.vulnerabilities),
+            total_suggestions=len(suggestions),
+            suggestions=suggestions,
+            model_used="lightgbm + amazon/nova-lite-v1"
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[ML Priority] Erreur: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur lors de la génération ML: {str(e)}"
+        )

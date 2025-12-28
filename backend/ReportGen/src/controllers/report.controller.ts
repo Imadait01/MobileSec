@@ -201,7 +201,7 @@ export class ReportController {
         logger.warn('No file uploaded in multipart request', { headers: req.headers, contentType: req.headers['content-type'] });
         res.status(400).json({
           error: 'No file uploaded',
-          message: 'Please upload a JSON file containing scan results. Check that the file field name is "file" and file is a .json' 
+          message: 'Please upload a JSON file containing scan results. Check that the file field name is "file" and file is a .json'
         });
         return;
       }
@@ -231,7 +231,7 @@ export class ReportController {
 
       // If client passed a format override via query string (eg. ?format=pdf), prefer it
       if (req.query && req.query.format) {
-        try { requestData.format = String(req.query.format).toLowerCase(); } catch(e) { /* ignore */ }
+        try { requestData.format = String(req.query.format).toLowerCase(); } catch (e) { /* ignore */ }
       }
 
       // Valider les données
@@ -631,7 +631,7 @@ export class ReportController {
         const pdfPath = await pdfGeneratorService.generatePdf(report, { ...opts, template: templateName }, requestedPdfPath as any);
         report.filePath = pdfPath; report.format = 'pdf';
         // best-effort persist metadata
-        try { await mongoClient.saveReport(report.reportId, { reportId: report.reportId, format: 'pdf', path: pdfPath, summary: report.metrics, vulnerabilitiesCount: report.metrics.total }); } catch(e) { logger.debug('Mongo saveReport failed', { error: e }); }
+        try { await mongoClient.saveReport(report.reportId, { reportId: report.reportId, format: 'pdf', path: pdfPath, summary: report.metrics, vulnerabilitiesCount: report.metrics.total }); } catch (e) { logger.debug('Mongo saveReport failed', { error: e }); }
         const pdfBuf = await fs.readFile(pdfPath);
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename="${(report.projectName || 'report').replace(/[^a-zA-Z0-9]/g, '-')}.pdf"`);
@@ -675,6 +675,18 @@ export class ReportController {
       // Récupérer toutes les données du scan depuis MongoDB
       const scanData: any = await mongoClient.getAllResultsForScan(scanId);
 
+      // DEBUG: Log what we got from MongoDB
+      logger.info('[DEBUG generateFromScan] MongoDB scanData keys:', {
+        keys: Object.keys(scanData || {}),
+        hasApk: !!scanData.apk,
+        hasSecrets: !!scanData.secrets,
+        hasCrypto: !!scanData.crypto,
+        hasNetwork: !!scanData.network,
+        secretsCount: scanData.secrets?.secrets?.length || 0,
+        cryptoCount: scanData.crypto?.vulnerabilities?.length || 0,
+        networkCount: scanData.network?.analysis?.security_issues?.length || 0
+      });
+
       if (!scanData.apk && !scanData.secrets && !scanData.crypto && !scanData.network) {
         res.status(404).json({
           error: 'Scan not found',
@@ -702,7 +714,7 @@ export class ReportController {
       // Convertir les résultats secrets
       if (scanData.secrets?.secrets) {
         scanResults.secretHunter = scanData.secrets.secrets.map((s: any) => ({
-          ruleId: s.rule_id || s.type || 'SECRET_EXPOSED',
+          ruleId: s.type || s.description?.substring(0, 50) || s.rule_id || 'SECRET_EXPOSED',
           severity: this.mapSeverity(s.severity) || 'high',
           message: s.description || s.match || `Secret found: ${s.type}`,
           file: s.file_path || s.file || s.filePath,
@@ -763,6 +775,16 @@ export class ReportController {
         format,
         options
       };
+
+      // DEBUG: Log transformed scanResults
+      logger.info('[DEBUG generateFromScan] Transformed scanResults:', {
+        keys: Object.keys(scanResults),
+        cryptoCheckCount: scanResults.cryptoCheck?.length || 0,
+        secretHunterCount: scanResults.secretHunter?.length || 0,
+        networkInspectorCount: scanResults.networkInspector?.length || 0,
+        apkScannerCount: scanResults.apkScanner?.length || 0
+      });
+
 
       // Ensure project name isn't the placeholder 'Unknown App'
       const finalProjectName = (projectName && projectName.trim() && projectName !== 'Unknown App') ? projectName : `Scan ${scanId}`;
@@ -1181,6 +1203,17 @@ export class ReportController {
       // Mettre à jour le statut
       this.updateReportStatus(reportId, 'processing');
 
+      // DEBUG: Log what we receive in processReport
+      logger.info('[DEBUG processReport] requestData keys:', {
+        keys: Object.keys(requestData || {}),
+        hasServices: !!(requestData as any).services,
+        hasScanResults: !!(requestData as any).scanResults,
+        hasResults: !!(requestData as any).results,
+        scanResultsKeys: Object.keys((requestData as any).scanResults || {}),
+        scanResultsCryptoCount: ((requestData as any).scanResults?.cryptoCheck)?.length || 0,
+        scanResultsSecretsCount: ((requestData as any).scanResults?.secretHunter)?.length || 0
+      });
+
       // 1. Agréger les résultats de tous les outils
       logger.debug('Aggregating scan results', { reportId });
 
@@ -1233,7 +1266,7 @@ export class ReportController {
           try {
             if (v.source && String(v.source).toLowerCase().includes(svcKey.toLowerCase())) return true;
             if (Array.isArray(v.detectedBy) && v.detectedBy.some((d: string) => String(d).toLowerCase().includes(svcKey.toLowerCase()))) return true;
-          } catch (e) {}
+          } catch (e) { }
           return false;
         });
 
@@ -1289,6 +1322,17 @@ export class ReportController {
 
       // Debug: log what services we attached to the report
       logger.info('Constructed report, services keys', { reportId, services: Object.keys(report.services || {}) });
+
+      // DEBUG: Log the structure of each service
+      logger.info('[DEBUG processReport] Services structure:', {
+        reportId,
+        servicesKeys: Object.keys(report.services || {}),
+        cryptoFindings: report.services?.cryptoCheck?.findings?.length || 0,
+        secretsFindings: report.services?.secretHunter?.findings?.length || 0,
+        networkFindings: report.services?.networkInspector?.findings?.length || 0,
+        apkFindings: report.services?.apkScanner?.findings?.length || 0
+      });
+
 
       // 6. Générer le fichier selon le format demandé
       let filePath: string;

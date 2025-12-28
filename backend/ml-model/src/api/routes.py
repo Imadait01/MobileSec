@@ -143,6 +143,8 @@ async def get_model_info():
         )
 
 
+
+
 @router.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
     """
@@ -158,3 +160,122 @@ async def health_check():
         "model_loaded": is_ready,
         "service": "ml-model"
     }
+
+
+# New Endpoint for Vulnerability Prioritization
+class VulnerabilityInput(BaseModel):
+    """Single vulnerability for prioritization"""
+    id: str
+    title: str
+    severity: str
+    file: Optional[str] = None
+    line: Optional[int] = None
+    description: Optional[str] = None
+
+
+class PrioritizationRequest(BaseModel):
+    """Request model for bulk prioritization"""
+    scan_id: str
+    vulnerabilities: List[VulnerabilityInput] = Field(..., description="List of vulnerabilities to prioritize")
+
+
+class PrioritizedVulnerability(BaseModel):
+    """Prioritized vulnerability with LightGBM score"""
+    vulnerability_id: str
+    vulnerability_title: str
+    severity: str
+    file: Optional[str]
+    lightgbm_category: str
+    confidence: float
+    priority_rank: int
+
+
+class PrioritizationResponse(BaseModel):
+    """Response model for prioritization"""
+    scan_id: str
+    total_vulnerabilities: int
+    prioritized: List[PrioritizedVulnerability]
+
+
+@router.post("/prioritize", response_model=PrioritizationResponse, status_code=status.HTTP_200_OK)
+async def prioritize_vulnerabilities(request: PrioritizationRequest):
+    """
+    Prioritize vulnerabilities using LightGBM model
+    
+    This endpoint accepts a list of vulnerabilities and returns them sorted
+    by LightGBM confidence score (highest first). This allows downstream
+    services (like FixSuggest) to generate AI suggestions for the most
+    critical vulnerabilities first.
+    
+    Args:
+        request: Scan ID and list of vulnerabilities
+        
+    Returns:
+        Prioritized vulnerabilities with confidence scores
+    """
+    try:
+        if not predictor.is_loaded:
+            predictor.load_model()
+        
+        logger.info(f"Prioritizing {len(request.vulnerabilities)} vulnerabilities for scan {request.scan_id}")
+        
+        # Get LightGBM prediction for the scan
+        scan_prediction = predictor.predict_from_scan_id(request.scan_id, top_k=5)
+        
+        # Map vulnerabilities to their priorities
+        # For now, assign the same LightGBM scores to all vulns (since LightGBM predicts fix categories, not individual vulns)
+        # In a more sophisticated version, we could analyze each vuln individually
+        primary_category = scan_prediction['primary_fix']
+        primary_confidence = scan_prediction['confidence']
+        
+        prioritized = []
+        for idx, vuln in enumerate(request.vulnerabilities):
+            # Assign priority based on severity if available
+            severity_weights = {
+                'CRITICAL': 1.0,
+                'HIGH': 0.8,
+                'MEDIUM': 0.6,
+                'LOW': 0.4,
+                'INFO': 0.2
+            }
+            
+            severity_weight = severity_weights.get(vuln.severity.upper(), 0.5)
+            adjusted_confidence = primary_confidence * severity_weight
+            
+            prioritized.append({
+                'vulnerability_id': vuln.id,
+                'vulnerability_title': vuln.title,
+                'severity': vuln.severity,
+                'file': vuln.file,
+                'lightgbm_category': primary_category,
+                'confidence': round(adjusted_confidence, 4),
+                'priority_rank': idx + 1  # Will be re-ranked after sorting
+            })
+        
+        # Sort by confidence (descending)
+        prioritized.sort(key=lambda x: x['confidence'], reverse=True)
+        
+        # Update priority ranks
+        for idx, item in enumerate(prioritized):
+            item['priority_rank'] = idx + 1
+        
+        logger.info(f"Prioritization complete. Top vulnerability: {prioritized[0]['vulnerability_title'] if prioritized else 'None'}")
+        
+        return {
+            'scan_id': request.scan_id,
+            'total_vulnerabilities': len(prioritized),
+            'prioritized': prioritized
+        }
+    
+    except ValueError as e:
+        logger.error(f"Scan not found: {request.scan_id}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Scan ID not found: {request.scan_id}"
+        )
+    except Exception as e:
+        logger.error(f"Prioritization error for scan {request.scan_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Prioritization failed: {str(e)}"
+        )
