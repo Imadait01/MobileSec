@@ -264,14 +264,12 @@ This project is licensed under the MIT License.
 - **LightGBM** - Gradient boosting framework
 - **Google Gemini** - AI language model
 
----
 
-## 📧 Support
 
-For issues and questions:
-- GitHub Issues: https://github.com/Imadait01/MobileSec/issues
-- Email: support@mobilesec.io
 
----
 
-**Built with ❤️ for Mobile Security**
+https://github.com/user-attachments/assets/9141fc02-2b81-488a-a930-d743aa27b95a
+
+
+
+
